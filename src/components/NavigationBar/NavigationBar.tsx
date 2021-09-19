@@ -24,8 +24,16 @@ const NavigationBar: FC = () => {
         style={[styles.navigationBarTab, activeTab === 0 && styles.activeTab]}
       >
         <View style={styles.tabIcon}>
-          <Icon name="md-people-outline" size={30} color="#4267B2" />
-          <Text>Groups</Text>
+          <Icon
+            name="md-people-outline"
+            size={30}
+            color={activeTab === 0 ? "#4267B2" : "#696969"}
+          />
+          <Text
+            style={activeTab === 0 ? styles.activeText : styles.nonActiveText}
+          >
+            Groups
+          </Text>
         </View>
       </TouchableOpacity>
 
@@ -34,8 +42,16 @@ const NavigationBar: FC = () => {
         style={[styles.navigationBarTab, activeTab === 1 && styles.activeTab]}
       >
         <View style={styles.tabIcon}>
-          <Icon name="md-menu-outline" size={30} color="#4267B2" />
-          <Text>Menu</Text>
+          <Icon
+            name="md-menu-outline"
+            size={30}
+            color={activeTab === 1 ? "#4267B2" : "#696969"}
+          />
+          <Text
+            style={activeTab === 1 ? styles.activeText : styles.nonActiveText}
+          >
+            Menu
+          </Text>
         </View>
       </TouchableOpacity>
     </View>

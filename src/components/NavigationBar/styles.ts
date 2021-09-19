@@ -18,6 +18,12 @@ const styles = StyleSheet.create({
     borderColor: "#4267B2",
     marginTop: -1.5,
   },
+  nonActiveText: {
+    color: "#696969",
+  },
+  activeText: {
+    color: "#4267B2",
+  },
   tabIcon: {
     alignItems: "center",
   },

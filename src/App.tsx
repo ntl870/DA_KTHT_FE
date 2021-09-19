@@ -17,7 +17,7 @@ const App: FC = () => {
           <Stack.Screen
             name="Home"
             options={{
-              headerShown: true,
+              headerShown: false,
             }}
             component={Home}
           />
@@ -25,7 +25,7 @@ const App: FC = () => {
             name="Login"
             component={Login}
             options={{
-              headerTitleAlign: "center",
+              headerShown: false,
             }}
           />
         </Stack.Navigator>
