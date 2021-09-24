@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from "axios";
+import axios from "axios";
 import { BASE_API } from "@env";
 
 export const clientAPI = axios.create({

@@ -21,14 +21,15 @@ const Login: FC = () => {
   const toggleHidingPassword = (): void => {
     setHidden((prev) => !prev);
   };
+
   const onSubmit = async (form: ILoginForm): Promise<void> => {
     setLoading(true);
-    const data: ILoginData | undefined = await clientLogin(form);
+    const data: ILoginData = await clientLogin(form);
     const token: string = data.token;
     dispatch(login(token));
     if (!data.success) {
       setLoading(false);
-      setWrongInput(!data.success);
+      setWrongInput(true);
     }
   };
 
