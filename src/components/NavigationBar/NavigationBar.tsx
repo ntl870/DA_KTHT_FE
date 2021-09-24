@@ -2,8 +2,8 @@ import React, { FC, useState } from "react";
 import { TouchableOpacity, View, Text } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "../../screens/RootStackPrams";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../../types/screens";
 import styles from "./styles";
 
 type screensProps = StackNavigationProp<RootStackParamList>;
