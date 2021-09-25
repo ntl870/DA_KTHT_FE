@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "276064360610",
+    "project_id": "da-ktht",
+    "storage_bucket": "da-ktht.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:276064360610:android:8bce5f6b6cfb411c10dffb",
+        "android_client_info": {
+          "package_name": "daktht.mobile.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "276064360610-cqv8100mq2frsa68d1r4il7ktdj74r6p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrC4DlkAlov8xcrcuPSM6RldWX0urNiTI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "276064360610-cqv8100mq2frsa68d1r4il7ktdj74r6p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
