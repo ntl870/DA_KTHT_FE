@@ -7,9 +7,10 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useSelector, useDispatch } from "react-redux";
 import { selectToken } from "./store/reducers/AuthSlice";
 import Home from "./screens/Home/Home";
-import Login from "./screens/Login/Login";
+import Camera from "./components/Camera/Camera";
 import NavigationBar from "./components/NavigationBar/NavigationBar";
 import { getToken } from "./store/reducers/AuthSlice";
+import AuthStack from "./stacks/AuthStack/AuthStack";
 
 const App: FC = () => {
   const dispatch = useDispatch();
@@ -31,8 +32,8 @@ const App: FC = () => {
               component={Home}
             />
             <Stack.Screen
-              name="Login"
-              component={Login}
+              name="Camera"
+              component={Camera}
               options={{
                 headerShown: false,
               }}
@@ -41,7 +42,7 @@ const App: FC = () => {
           <NavigationBar />
         </NavigationContainer>
       ) : (
-        <Login />
+        <AuthStack />
       )}
     </SafeAreaProvider>
   );
