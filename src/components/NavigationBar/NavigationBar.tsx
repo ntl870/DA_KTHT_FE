@@ -2,16 +2,12 @@ import React, { FC, useState } from "react";
 import { TouchableOpacity, View, Text } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../../types/screens";
+import { RootStackParamList, RootScreenProps } from "../../types/screens";
 import styles from "./styles";
 
-type screensProps = StackNavigationProp<RootStackParamList>;
-
 const NavigationBar: FC = () => {
-  const navigation = useNavigation<screensProps>();
+  const navigation = useNavigation<RootScreenProps>();
   const [activeTab, setActiveTab] = useState<number>(0);
-
   const selectTab = (id: number, screen: keyof RootStackParamList) => {
     setActiveTab(id);
     navigation.navigate(screen);
@@ -38,7 +34,7 @@ const NavigationBar: FC = () => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => selectTab(1, "Login")}
+        onPress={() => selectTab(1, "Menu")}
         style={[styles.navigationBarTab, activeTab === 1 && styles.activeTab]}
       >
         <View style={styles.tabIcon}>

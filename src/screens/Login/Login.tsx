@@ -1,10 +1,15 @@
 import React, { FC, useState } from "react";
-import { SafeAreaView } from "react-native";
-import { TextInput, Button, Text } from "react-native-paper";
-import { useForm, Controller } from "react-hook-form";
+import { Pressable, SafeAreaView, View } from "react-native";
+import { Button, Text } from "react-native-paper";
+import { useForm } from "react-hook-form";
+import { useNavigation } from "@react-navigation/core";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/reducers/AuthSlice";
-import { clientLogin, ILoginData } from "../../apis/services/client";
+import { clientLogin, ILoginData } from "../../apis/services/auth";
+import { RootScreenProps } from "../../types/screens";
+import FormController, {
+  IFormController,
+} from "../../components/FormController/FormController";
 import styles from "./styles";
 
 export interface ILoginForm {
@@ -13,13 +18,20 @@ export interface ILoginForm {
 }
 
 const Login: FC = () => {
+  const navigation = useNavigation<RootScreenProps>();
+
   const dispatch = useDispatch();
   const [isHidden, setHidden] = useState<boolean>(true);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [wrongInput, setWrongInput] = useState<boolean>(false);
   const { handleSubmit, control } = useForm<ILoginForm>();
+
   const toggleHidingPassword = (): void => {
     setHidden((prev) => !prev);
+  };
+
+  const switchScreen = (): void => {
+    navigation.navigate("SignUp");
   };
 
   const onSubmit = async (form: ILoginForm): Promise<void> => {
@@ -30,50 +42,42 @@ const Login: FC = () => {
     if (!data.success) {
       setLoading(false);
       setWrongInput(true);
+      return;
     }
   };
 
+  const formControllerProps: IFormController[] = [
+    {
+      name: "email",
+      control: control,
+      error: wrongInput,
+      label: "Email",
+      mode: "outlined",
+      outlineColor: "#5D3FD3",
+      leftIcon: "email",
+      style: styles.input,
+    },
+    {
+      name: "password",
+      control: control,
+      error: wrongInput,
+      label: "Password",
+      mode: "outlined",
+      outlineColor: "#5D3FD3",
+      leftIcon: "lock",
+      rightIcon: isHidden ? "eye" : "eye-off",
+      secureTextEntry: isHidden,
+      onPress: toggleHidingPassword,
+      style: styles.input,
+    },
+  ];
+
   return (
     <SafeAreaView style={styles.root}>
-      <Controller
-        name="email"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            error={wrongInput}
-            label="Email"
-            mode="outlined"
-            outlineColor="#5D3FD3"
-            left={<TextInput.Icon name="email" />}
-            style={styles.input}
-            onChangeText={(text) => onChange(text)}
-            value={value}
-          />
-        )}
-      />
-      <Controller
-        name="password"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            error={wrongInput}
-            label="Password"
-            secureTextEntry={isHidden}
-            mode="outlined"
-            outlineColor="#5D3FD3"
-            left={<TextInput.Icon name="lock" />}
-            right={
-              <TextInput.Icon
-                name={isHidden ? "eye" : "eye-off"}
-                onPress={toggleHidingPassword}
-              />
-            }
-            style={styles.input}
-            onChangeText={(text) => onChange(text)}
-            value={value}
-          />
-        )}
-      />
+      {formControllerProps.map((props) => {
+        return <FormController {...props} key={props.name} />;
+      })}
+
       {wrongInput && (
         <Text style={styles.errorText}>Wrong Email or Password</Text>
       )}
@@ -88,6 +92,21 @@ const Login: FC = () => {
       >
         {isLoading ? "Loading" : "Login"}
       </Button>
+      <View style={styles.switchScreenContainer}>
+        <Text style={styles.switchScreenHelperText}>
+          Didn't have an account yet ?
+        </Text>
+        <Pressable
+          onPress={switchScreen}
+          style={({ pressed }) => [
+            {
+              backgroundColor: pressed ? "rgb(210, 230, 255)" : "rgba(0,0,0,0)",
+            },
+          ]}
+        >
+          <Text style={styles.switchScreenText}>Sign Up</Text>
+        </Pressable>
+      </View>
     </SafeAreaView>
   );
 };
