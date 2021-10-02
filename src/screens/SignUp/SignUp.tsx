@@ -1,12 +1,12 @@
 import React, { FC, useState } from "react";
 import { Pressable, SafeAreaView, View } from "react-native";
-import { TextInput, Button, Text } from "react-native-paper";
-import { useForm, Controller } from "react-hook-form";
+import { Button, Text } from "react-native-paper";
+import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import { screensProps } from "../../types/screens";
+import { RootScreenProps } from "../../types/screens";
 import { login } from "../../store/reducers/AuthSlice";
-import { clientSignUp, ILoginData } from "../../apis/services/client";
+import { clientSignUp, ILoginData } from "../../apis/services/auth";
 import FormController, {
   IFormController,
 } from "../../components/FormController/FormController";
@@ -38,7 +38,7 @@ interface InputError {
 }
 
 const SignUp: FC = () => {
-  const navigation = useNavigation<screensProps>();
+  const navigation = useNavigation<RootScreenProps>();
   const dispatch = useDispatch();
   const [isHiddenPassword, setHiddenPassword] = useState<IHidePassWord>({
     password: true,

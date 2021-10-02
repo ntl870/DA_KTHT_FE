@@ -1,45 +1,48 @@
 import "react-native-gesture-handler";
-import React, { FC } from "react";
+import React, { FC, useCallback, useEffect } from "react";
 import { StatusBar } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useSelector, useDispatch } from "react-redux";
 import { selectToken } from "./store/reducers/AuthSlice";
 import Home from "./screens/Home/Home";
-import Camera from "./components/Camera/Camera";
-import NavigationBar from "./components/NavigationBar/NavigationBar";
 import { getToken } from "./store/reducers/AuthSlice";
 import AuthStack from "./stacks/AuthStack/AuthStack";
+import MenuStack from "./stacks/MenuStack/MenuStack";
+import { getClientAsync } from "./store/reducers/UserSlice";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 const App: FC = () => {
   const dispatch = useDispatch();
-  const Stack = createStackNavigator();
   dispatch(getToken());
   const token = useSelector(selectToken);
   const isSignedIn = Boolean(token);
+
+  const fetchUser = useCallback((): void => {
+    if (isSignedIn) {
+      dispatch(getClientAsync(token as string));
+    }
+  }, [dispatch, token, isSignedIn]);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser, token]);
+
+  const Tab = createBottomTabNavigator();
+
   return (
     <SafeAreaProvider>
       <StatusBar />
       {isSignedIn ? (
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Home">
-            <Stack.Screen
-              name="Home"
-              options={{
-                headerShown: false,
-              }}
-              component={Home}
+          <Tab.Navigator screenOptions={{ headerShown: false }}>
+            <Tab.Screen name="Home" component={Home} />
+            <Tab.Screen
+              name="Menu"
+              component={MenuStack}
+              options={{ headerShown: false }}
             />
-            <Stack.Screen
-              name="Camera"
-              component={Camera}
-              options={{
-                headerShown: false,
-              }}
-            />
-          </Stack.Navigator>
-          <NavigationBar />
+          </Tab.Navigator>
         </NavigationContainer>
       ) : (
         <AuthStack />

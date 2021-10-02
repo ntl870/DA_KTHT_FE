@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "276064360610",
-    "project_id": "da-ktht",
-    "storage_bucket": "da-ktht.appspot.com"
+    "project_number": "243920648807",
+    "project_id": "daktht",
+    "storage_bucket": "daktht.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:276064360610:android:8bce5f6b6cfb411c10dffb",
+        "mobilesdk_app_id": "1:243920648807:android:31dffb2bfdf2769a7332c2",
         "android_client_info": {
-          "package_name": "daktht.mobile.app"
+          "package_name": "com.da_ktht_fe"
         }
       },
       "oauth_client": [
         {
-          "client_id": "276064360610-cqv8100mq2frsa68d1r4il7ktdj74r6p.apps.googleusercontent.com",
+          "client_id": "243920648807-i9qje535cpu73i8u4v2vt0qua70mfmch.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBrC4DlkAlov8xcrcuPSM6RldWX0urNiTI"
+          "current_key": "AIzaSyCtNbj2k92xObVezStmQ0FHP3rx_GyfN8g"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "276064360610-cqv8100mq2frsa68d1r4il7ktdj74r6p.apps.googleusercontent.com",
+              "client_id": "243920648807-i9qje535cpu73i8u4v2vt0qua70mfmch.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

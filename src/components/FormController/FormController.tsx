@@ -2,15 +2,14 @@
 import React, { FC } from "react";
 import { Controller } from "react-hook-form";
 import { TextInput } from "react-native-paper";
-import {} from "react-native";
-// import {} from "react-native-vector-icons";
 
 export interface IFormController {
   name: string;
   control: any;
-  error: boolean;
+  defaultValue?: string;
+  error?: boolean;
   label: string;
-  mode?: "flat" | "outlined" | undefined;
+  mode?: "flat" | "outlined";
   outlineColor?: string;
   leftIcon?: any;
   rightIcon?: any;
@@ -22,6 +21,7 @@ export interface IFormController {
 const FormController: FC<IFormController> = ({
   name,
   control,
+  defaultValue,
   error,
   label,
   mode,
@@ -36,6 +36,7 @@ const FormController: FC<IFormController> = ({
     <Controller
       name={name}
       control={control}
+      defaultValue={defaultValue}
       render={({ field: { onChange, value } }) => (
         <TextInput
           secureTextEntry={secureTextEntry}
@@ -50,6 +51,7 @@ const FormController: FC<IFormController> = ({
           style={style}
           onChangeText={(text) => onChange(text)}
           value={value}
+          defaultValue={defaultValue}
         />
       )}
     />

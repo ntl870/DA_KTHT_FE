@@ -1,12 +1,12 @@
 import React, { FC, useState } from "react";
 import { Pressable, SafeAreaView, View } from "react-native";
-import { TextInput, Button, Text } from "react-native-paper";
-import { useForm, Controller } from "react-hook-form";
+import { Button, Text } from "react-native-paper";
+import { useForm } from "react-hook-form";
 import { useNavigation } from "@react-navigation/core";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/reducers/AuthSlice";
-import { clientLogin, ILoginData } from "../../apis/services/client";
-import { screensProps } from "../../types/screens";
+import { clientLogin, ILoginData } from "../../apis/services/auth";
+import { RootScreenProps } from "../../types/screens";
 import FormController, {
   IFormController,
 } from "../../components/FormController/FormController";
@@ -18,7 +18,7 @@ export interface ILoginForm {
 }
 
 const Login: FC = () => {
-  const navigation = useNavigation<screensProps>();
+  const navigation = useNavigation<RootScreenProps>();
 
   const dispatch = useDispatch();
   const [isHidden, setHidden] = useState<boolean>(true);
