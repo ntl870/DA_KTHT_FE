@@ -6,6 +6,11 @@ const styles = StyleSheet.create({
     alignContent: "center",
     justifyContent: "center",
     flex: 1,
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  flexOne: {
+    flex: 1,
   },
   input: {
     marginRight: 30,

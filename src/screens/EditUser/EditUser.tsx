@@ -58,6 +58,7 @@ const EditUserScreen: FC = () => {
       setLoading(true);
       if (!Number(form.phone) && form.phone?.length !== 0) {
         setInvalidPhone(true);
+        return;
       }
 
       const imageURL = imageSelected

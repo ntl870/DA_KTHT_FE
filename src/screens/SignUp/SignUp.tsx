@@ -1,5 +1,13 @@
 import React, { FC, useState } from "react";
-import { Pressable, SafeAreaView, View } from "react-native";
+import {
+  Pressable,
+  SafeAreaView,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Button, Text } from "react-native-paper";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
@@ -162,42 +170,49 @@ const SignUp: FC = () => {
   ];
 
   return (
-    <SafeAreaView style={styles.root}>
-      {inputErrorsIndex !== null && (
-        <Text style={styles.errorText}>
-          {inputErrors[inputErrorsIndex].error}
-        </Text>
-      )}
-
-      {formControllersProps.map((props) => {
-        return <FormController {...props} key={props.name} />;
-      })}
-      <Button
-        mode="contained"
-        onPress={handleSubmit(onSubmit)}
-        style={styles.input}
-        icon={isLoading ? "refresh" : undefined}
-        loading={isLoading}
-        disabled={isLoading}
+    <SafeAreaProvider style={styles.root}>
+      <KeyboardAvoidingView
+        keyboardVerticalOffset={10}
       >
-        {isLoading ? "Loading" : "Sign Up"}
-      </Button>
-      <View style={styles.switchScreenContainer}>
-        <Text style={styles.switchScreenHelperText}>
-          Already had an account ?
-        </Text>
-        <Pressable
-          onPress={switchScreen}
-          style={({ pressed }) => [
-            {
-              backgroundColor: pressed ? "rgb(210, 230, 255)" : "rgba(0,0,0,0)",
-            },
-          ]}
-        >
-          <Text style={styles.switchScreenText}>Login</Text>
-        </Pressable>
-      </View>
-    </SafeAreaView>
+        <ScrollView>
+          {formControllersProps.map((props) => {
+            return <FormController {...props} key={props.name} />;
+          })}
+          {inputErrorsIndex !== null && (
+            <Text style={styles.errorText}>
+              {inputErrors[inputErrorsIndex].error}
+            </Text>
+          )}
+          <Button
+            mode="contained"
+            onPress={handleSubmit(onSubmit)}
+            style={styles.input}
+            icon={isLoading ? "refresh" : undefined}
+            loading={isLoading}
+            disabled={isLoading}
+          >
+            {isLoading ? "Loading" : "Sign Up"}
+          </Button>
+          <View style={styles.switchScreenContainer}>
+            <Text style={styles.switchScreenHelperText}>
+              Already had an account ?
+            </Text>
+            <Pressable
+              onPress={switchScreen}
+              style={({ pressed }) => [
+                {
+                  backgroundColor: pressed
+                    ? "rgb(210, 230, 255)"
+                    : "rgba(0,0,0,0)",
+                },
+              ]}
+            >
+              <Text style={styles.switchScreenText}>Login</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaProvider>
   );
 };
 
