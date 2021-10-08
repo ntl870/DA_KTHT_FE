@@ -1,55 +1,70 @@
-import React, { FC, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { FC } from "react";
 import { TouchableOpacity, View, Text } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import { useNavigation } from "@react-navigation/native";
-import { RootStackParamList, RootScreenProps } from "../../types/screens";
 import styles from "./styles";
 
-const NavigationBar: FC = () => {
-  const navigation = useNavigation<RootScreenProps>();
-  const [activeTab, setActiveTab] = useState<number>(0);
-  const selectTab = (id: number, screen: keyof RootStackParamList) => {
-    setActiveTab(id);
-    navigation.navigate(screen);
-  };
-
+const NavigationBar: FC = ({ state, descriptors, navigation }: any) => {
   return (
     <View style={styles.navigationBarContainer}>
-      <TouchableOpacity
-        onPress={() => selectTab(0, "Home")}
-        style={[styles.navigationBarTab, activeTab === 0 && styles.activeTab]}
-      >
-        <View style={styles.tabIcon}>
-          <Icon
-            name="md-people-outline"
-            size={30}
-            color={activeTab === 0 ? "#4267B2" : "#696969"}
-          />
-          <Text
-            style={activeTab === 0 ? styles.activeText : styles.nonActiveText}
-          >
-            Groups
-          </Text>
-        </View>
-      </TouchableOpacity>
+      {state.routes.map((route: any, index: number) => {
+        const { options } = descriptors[route.key];
 
-      <TouchableOpacity
-        onPress={() => selectTab(1, "Menu")}
-        style={[styles.navigationBarTab, activeTab === 1 && styles.activeTab]}
-      >
-        <View style={styles.tabIcon}>
-          <Icon
-            name="md-menu-outline"
-            size={30}
-            color={activeTab === 1 ? "#4267B2" : "#696969"}
-          />
-          <Text
-            style={activeTab === 1 ? styles.activeText : styles.nonActiveText}
+        const isFocused = state.index === index;
+        const details = [
+          {
+            icon: "md-people-outline",
+            name: "Groups",
+          },
+          {
+            icon: "md-menu-outline",
+            name: "Menu",
+          },
+        ];
+        const onPress = () => {
+          const event = navigation.emit({
+            type: "tabPress",
+            target: route.key,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
+
+        const onLongPress = () => {
+          navigation.emit({
+            type: "tabLongPress",
+            target: route.key,
+          });
+        };
+
+        return (
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityState={isFocused ? { selected: true } : {}}
+            accessibilityLabel={options.tabBarAccessibilityLabel}
+            testID={options.tabBarTestID}
+            onPress={onPress}
+            onLongPress={onLongPress}
+            key={route.name}
+            style={[styles.navigationBarTab, isFocused && styles.activeTab]}
           >
-            Menu
-          </Text>
-        </View>
-      </TouchableOpacity>
+            <View style={styles.tabIcon}>
+              <Icon
+                name={details[index].icon}
+                size={30}
+                color={isFocused ? "#4267B2" : "#696969"}
+              />
+              <Text
+                style={isFocused ? styles.activeText : styles.nonActiveText}
+              >
+                {details[index].name}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 };
