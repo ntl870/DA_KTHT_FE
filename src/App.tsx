@@ -11,6 +11,7 @@ import AuthStack from "./stacks/AuthStack/AuthStack";
 import MenuStack from "./stacks/MenuStack/MenuStack";
 import { getClientAsync } from "./store/reducers/UserSlice";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import NavigationBar from "./components/NavigationBar/NavigationBar";
 
 const App: FC = () => {
   const dispatch = useDispatch();
@@ -35,7 +36,10 @@ const App: FC = () => {
       <StatusBar />
       {isSignedIn ? (
         <NavigationContainer>
-          <Tab.Navigator screenOptions={{ headerShown: false }}>
+          <Tab.Navigator
+            tabBar={(props) => <NavigationBar {...props} />}
+            screenOptions={{ headerShown: false }}
+          >
             <Tab.Screen name="Home" component={Home} />
             <Tab.Screen
               name="Menu"
@@ -43,6 +47,7 @@ const App: FC = () => {
               options={{ headerShown: false }}
             />
           </Tab.Navigator>
+          {/* <NavigationBar /> */}
         </NavigationContainer>
       ) : (
         <AuthStack />
