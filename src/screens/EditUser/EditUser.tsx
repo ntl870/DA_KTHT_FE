@@ -16,6 +16,7 @@ import { updateClientAsync } from "../../store/reducers/UserSlice";
 import uploadPictureAndGetURL from "../../utils/UploadImageAndGetURL";
 import styles from "./styles";
 import { MenuScreenProps } from "../../types/screens";
+import LogoutButton from "../../components/LogoutButton/LogoutButton";
 
 export interface IUpdateForm {
   name?: string;
@@ -48,7 +49,7 @@ const EditUserScreen: FC = () => {
     );
   };
 
-  const nameAlias: string = getNameAlias(data?.name as string);
+  const nameAlias: string | void = getNameAlias(data?.name as string);
 
   const { handleSubmit, control } = useForm<MenuScreenProps>();
   const token: string = useSelector(selectToken) as string;
@@ -120,7 +121,11 @@ const EditUserScreen: FC = () => {
                 style={styles.image}
               />
             ) : (
-              <Avatar.Text size={150} label={nameAlias} style={styles.image} />
+              <Avatar.Text
+                size={150}
+                label={nameAlias as string}
+                style={styles.image}
+              />
             )}
             <Button onPress={selectImage}>Select Image</Button>
           </View>
@@ -145,6 +150,7 @@ const EditUserScreen: FC = () => {
           >
             Change Your Password
           </Button>
+          <LogoutButton style={styles.input} />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaProvider>

@@ -1,10 +1,8 @@
 import React, { FC, useState } from "react";
 import {
   Pressable,
-  SafeAreaView,
   View,
   KeyboardAvoidingView,
-  Platform,
   ScrollView,
 } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -171,9 +169,7 @@ const SignUp: FC = () => {
 
   return (
     <SafeAreaProvider style={styles.root}>
-      <KeyboardAvoidingView
-        keyboardVerticalOffset={10}
-      >
+      <KeyboardAvoidingView keyboardVerticalOffset={10}>
         <ScrollView>
           {formControllersProps.map((props) => {
             return <FormController {...props} key={props.name} />;

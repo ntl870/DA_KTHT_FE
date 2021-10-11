@@ -1,13 +1,13 @@
 import React, { FC } from "react";
 import { SafeAreaView, View, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
-import { Avatar, Text, Button } from "react-native-paper";
+import { Avatar, Text } from "react-native-paper";
 import { useNavigation } from "@react-navigation/core";
-import LogoutButton from "../../components/LogoutButton/LogoutButton";
 import { MenuStackParamList, MenuScreenProps } from "../../types/screens";
 import { selectUserInfo } from "../../store/reducers/UserSlice";
 import getNameAlias from "../../utils/GetNameAlias";
 import styles from "./styles";
+import Schedule from "../../components/Schedule/Schedule";
 
 const MenuScreen: FC = () => {
   const navigation: MenuScreenProps = useNavigation<MenuScreenProps>();
@@ -16,45 +16,38 @@ const MenuScreen: FC = () => {
   };
 
   const { data } = useSelector(selectUserInfo);
-  const nameAlias: string = getNameAlias(data?.name as string);
+  const nameAlias: string | void = getNameAlias(data?.name as string);
 
   return (
     <SafeAreaView style={styles.root}>
-      <View>
-        <TouchableOpacity
-          style={styles.userInfosContainer}
-          activeOpacity={0.4}
-          onPress={() => navigateToTab("EditUserScreen")}
-        >
-          <View style={styles.userInfos}>
-            {data?.avatar ? (
-              <Avatar.Image
-                size={60}
-                source={{ uri: data?.avatar }}
-                style={styles.userInfosImage}
-              />
-            ) : (
-              <Avatar.Text
-                size={60}
-                label={nameAlias}
-                style={styles.userInfosImage}
-              />
-            )}
+      <TouchableOpacity
+        style={styles.userInfosContainer}
+        activeOpacity={0.4}
+        onPress={() => navigateToTab("EditUserScreen")}
+      >
+        <View style={styles.userInfos}>
+          {data?.avatar ? (
+            <Avatar.Image
+              size={60}
+              source={{ uri: data?.avatar }}
+              style={styles.userInfosImage}
+            />
+          ) : (
+            <Avatar.Text
+              size={60}
+              label={nameAlias as string}
+              style={styles.userInfosImage}
+            />
+          )}
 
-            <View>
-              <Text style={styles.userInfosUpperText}>{data?.name}</Text>
-              <Text>See your profile</Text>
-            </View>
+          <View>
+            <Text style={styles.userInfosUpperText}>{data?.name}</Text>
+            <Text>See your profile</Text>
           </View>
-        </TouchableOpacity>
-        <View />
-        <View>
-          <Button mode="contained" style={styles.button}>
-            Your Schedule
-          </Button>
         </View>
-      </View>
-      <LogoutButton style={styles.button} />
+      </TouchableOpacity>
+      <View />
+      <Schedule />
     </SafeAreaView>
   );
 };

@@ -6,12 +6,17 @@ const styles = StyleSheet.create({
     alignContent: "center",
     justifyContent: "center",
     flex: 1,
+    paddingBottom: 10,
   },
   input: {
     marginRight: 30,
     marginLeft: 30,
     marginTop: 10,
     marginBottom: 10,
+  },
+  icon: {
+    alignSelf: "center",
+    marginLeft: 40,
   },
   errorText: {
     fontSize: 15,
