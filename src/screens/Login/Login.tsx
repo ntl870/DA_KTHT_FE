@@ -1,5 +1,12 @@
 import React, { FC, useState } from "react";
-import { Pressable, SafeAreaView, View } from "react-native";
+import {
+  Pressable,
+  SafeAreaView,
+  View,
+  Image,
+  KeyboardAvoidingView,
+  ScrollView,
+} from "react-native";
 import { Button, Text } from "react-native-paper";
 import { useForm } from "react-hook-form";
 import { useNavigation } from "@react-navigation/core";
@@ -10,6 +17,7 @@ import { RootScreenProps } from "../../types/screens";
 import FormController, {
   IFormController,
 } from "../../components/FormController/FormController";
+
 import styles from "./styles";
 
 export interface ILoginForm {
@@ -74,39 +82,51 @@ const Login: FC = () => {
 
   return (
     <SafeAreaView style={styles.root}>
-      {formControllerProps.map((props) => {
-        return <FormController {...props} key={props.name} />;
-      })}
+      <KeyboardAvoidingView keyboardVerticalOffset={10}>
+        <ScrollView>
+          <Image
+            source={require("../../assets/icon.png")}
+            height={400}
+            width={400}
+            style={styles.icon}
+          />
+          {formControllerProps.map((props) => {
+            return <FormController {...props} key={props.name} />;
+          })}
 
-      {wrongInput && (
-        <Text style={styles.errorText}>Wrong Email or Password</Text>
-      )}
+          {wrongInput && (
+            <Text style={styles.errorText}>Wrong Email or Password</Text>
+          )}
 
-      <Button
-        mode="contained"
-        onPress={handleSubmit(onSubmit)}
-        style={styles.input}
-        icon={isLoading ? "refresh" : undefined}
-        loading={isLoading}
-        disabled={isLoading}
-      >
-        {isLoading ? "Loading" : "Login"}
-      </Button>
-      <View style={styles.switchScreenContainer}>
-        <Text style={styles.switchScreenHelperText}>
-          Didn't have an account yet ?
-        </Text>
-        <Pressable
-          onPress={switchScreen}
-          style={({ pressed }) => [
-            {
-              backgroundColor: pressed ? "rgb(210, 230, 255)" : "rgba(0,0,0,0)",
-            },
-          ]}
-        >
-          <Text style={styles.switchScreenText}>Sign Up</Text>
-        </Pressable>
-      </View>
+          <Button
+            mode="contained"
+            onPress={handleSubmit(onSubmit)}
+            style={styles.input}
+            icon={isLoading ? "refresh" : undefined}
+            loading={isLoading}
+            disabled={isLoading}
+          >
+            {isLoading ? "Loading" : "Login"}
+          </Button>
+          <View style={styles.switchScreenContainer}>
+            <Text style={styles.switchScreenHelperText}>
+              Didn't have an account yet ?
+            </Text>
+            <Pressable
+              onPress={switchScreen}
+              style={({ pressed }) => [
+                {
+                  backgroundColor: pressed
+                    ? "rgb(210, 230, 255)"
+                    : "rgba(0,0,0,0)",
+                },
+              ]}
+            >
+              <Text style={styles.switchScreenText}>Sign Up</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

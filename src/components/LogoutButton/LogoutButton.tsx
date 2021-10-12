@@ -18,7 +18,7 @@ const LogoutButton: FC<IProps> = ({ style }) => {
     } catch (err) {}
   };
   return (
-    <Button mode="contained" onPress={logOut} style={style}>
+    <Button mode="contained" onPress={logOut} style={style} color="#FF4433">
       Logout
     </Button>
   );

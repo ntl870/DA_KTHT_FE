@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
     padding: 10,
     display: "flex",
     justifyContent: "space-between",
+    alignContent: "center",
   },
   flexOne: {
     flex: 1,

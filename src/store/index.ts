@@ -1,18 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
-import createSagaMiddleware from "redux-saga";
 import AuthSlice from "./reducers/AuthSlice";
 import UserSlice from "./reducers/UserSlice";
-const sagaMiddleware = createSagaMiddleware();
+import ScheduleSlice from "./reducers/ScheduleSlice";
 
 const store = configureStore({
   reducer: {
     auth: AuthSlice,
     client: UserSlice,
+    schedule: ScheduleSlice,
   },
-  //   middleware: (getDefaultMiddleware) =>
-  //     getDefaultMiddleware()."name": "Nguyen Thanh Long",concat(sagaMiddleware),
 });
-// sagaMiddleware.run(rootSaga);
+
 export default store;
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
