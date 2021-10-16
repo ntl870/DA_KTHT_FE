@@ -13,11 +13,13 @@ const NavigationBar: FC = ({ state, descriptors, navigation }: any) => {
         const isFocused = state.index === index;
         const details = [
           {
-            icon: "md-people-outline",
+            iconInactive: "md-people-outline",
+            iconActive: "md-people",
             name: "Groups",
           },
           {
-            icon: "md-menu-outline",
+            iconInactive: "md-menu-outline",
+            iconActive: "md-menu",
             name: "Menu",
           },
         ];
@@ -52,10 +54,15 @@ const NavigationBar: FC = ({ state, descriptors, navigation }: any) => {
           >
             <View style={styles.tabIcon}>
               <Icon
-                name={details[index].icon}
+                name={
+                  isFocused
+                    ? details[index].iconActive
+                    : details[index].iconInactive
+                }
                 size={30}
-                color={isFocused ? "#4267B2" : "#696969"}
+                color={isFocused ? "white" : "#9c9b96"}
               />
+
               <Text
                 style={isFocused ? styles.activeText : styles.nonActiveText}
               >

@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     flexGrow: 0,
     flexDirection: "row",
+    backgroundColor: "#6200ee",
   },
   navigationBarTab: {
     flexGrow: 1,
@@ -14,18 +15,20 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   activeTab: {
-    borderTopWidth: 1,
-    borderColor: "#4267B2",
     marginTop: -1.5,
   },
   nonActiveText: {
-    color: "#696969",
+    color: "#9c9b96",
+    fontWeight: "bold",
   },
   activeText: {
-    color: "#4267B2",
+    color: "white",
+    fontWeight: "bold",
   },
   tabIcon: {
+    display: "flex",
     alignItems: "center",
+    alignContent: "center",
   },
 });
 
