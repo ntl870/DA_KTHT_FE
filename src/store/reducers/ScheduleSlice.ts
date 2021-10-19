@@ -11,12 +11,12 @@ export const getUserSchedule = createAsyncThunk(
   }
 );
 
-interface Data {
+export interface ScheduleData {
   status: Status;
   data: Schedule[];
 }
 
-const initialState: Data = {
+const initialState: ScheduleData = {
   status: Status.rejected,
   data: [{}],
 };
@@ -42,6 +42,6 @@ const userScheduleSlice = createSlice({
   },
 });
 
-export const selectUserSchedule = (state: RootState): Data => state.schedule;
+export const selectUserSchedule = (state: RootState): ScheduleData => state.schedule;
 
 export default userScheduleSlice.reducer;

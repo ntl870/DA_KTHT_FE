@@ -5,9 +5,9 @@ import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useSelector, useDispatch } from "react-redux";
 import { selectToken } from "./store/reducers/AuthSlice";
-import Home from "./screens/Home/Home";
 import { getToken } from "./store/reducers/AuthSlice";
 import AuthStack from "./stacks/AuthStack/AuthStack";
+import GroupStack from "./stacks/GroupStack/GroupStack";
 import MenuStack from "./stacks/MenuStack/MenuStack";
 import { getClientAsync } from "./store/reducers/UserSlice";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -40,14 +40,13 @@ const App: FC = () => {
             tabBar={(props) => <NavigationBar {...props} />}
             screenOptions={{ headerShown: false }}
           >
-            <Tab.Screen name="Home" component={Home} />
+            <Tab.Screen name="Home" component={GroupStack} />
             <Tab.Screen
               name="Menu"
               component={MenuStack}
               options={{ headerShown: false }}
             />
           </Tab.Navigator>
-          {/* <NavigationBar /> */}
         </NavigationContainer>
       ) : (
         <AuthStack />

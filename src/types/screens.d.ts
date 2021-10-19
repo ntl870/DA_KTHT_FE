@@ -1,4 +1,5 @@
 import { StackNavigationProp } from "@react-navigation/stack";
+import { RouteProp } from "@react-navigation/core";
 export type RootStackParamList = {
   Home: undefined;
   Camera: undefined;
@@ -16,3 +17,11 @@ export type MenuStackParamList = {
 };
 
 export type MenuScreenProps = StackNavigationProp<MenuStackParamList>;
+
+export type GroupStackParamList = {
+  GroupScreen: undefined;
+  GroupDetailScreen: { id: string } | undefined;
+};
+
+export type GroupScreenProps = StackNavigationProp<GroupStackParamList>;
+export type GroupRouteProps = RouteProp<GroupStackParamList>;
