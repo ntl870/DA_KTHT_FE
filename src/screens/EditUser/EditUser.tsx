@@ -150,6 +150,13 @@ const EditUserScreen: FC = () => {
           >
             Change Your Password
           </Button>
+          <Button
+            mode="contained"
+            style={styles.input}
+            onPress={() => navigation.navigate("FaceRegconitionScreen")}
+          >
+            Face regconition
+          </Button>
           <LogoutButton style={styles.input} />
         </ScrollView>
       </KeyboardAvoidingView>
