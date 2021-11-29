@@ -1,6 +1,13 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { FlatList, ListRenderItem } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { useSelector, useDispatch } from "react-redux";
+import { AppDispatch } from "../../store";
+import { selectToken } from "../../store/reducers/AuthSlice";
+import {
+  selectDashboardGroups,
+  getDashboardGroups,
+} from "../../store/reducers/GroupSlice";
 import GroupItem from "./GroupItem";
 
 enum Role {
@@ -8,53 +15,39 @@ enum Role {
   user = "User",
 }
 
-export interface Group {
+export interface DashboardGroup {
   id: string;
   name: string;
+  description: string;
   numbersOfMember: number;
-  checkedIn: number;
   role: Role;
+  avatars: string[];
+  checkedIn: number;
+}
+export interface DashboardGroupsData {
+  currentPage: number;
+  totalPage: number;
+  totalGroups: number;
+  groups: DashboardGroup[];
 }
 
 const GroupList: FC = () => {
-  const DATA: Group[] = [
-    {
-      id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-      name: "First Item",
-      numbersOfMember: 20,
-      checkedIn: 10,
-      role: Role.admin,
-    },
-    {
-      id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-      name: "First Item",
-      numbersOfMember: 20,
-      checkedIn: 10,
-      role: Role.admin,
-    },
-    {
-      id: "58694a0f-3da1-471f-bd96-145571e29d72",
-      name: "First Item",
-      numbersOfMember: 20,
-      checkedIn: 10,
-      role: Role.admin,
-    },
-    {
-      id: "28694a0f-3da1-471f-bd96-145571e29d72",
-      name: "First Item",
-      numbersOfMember: 20,
-      checkedIn: 10,
-      role: Role.admin,
-    },
-  ];
-  const renderItem: ListRenderItem<Group> = ({ item }) => (
+  const dispatch = useDispatch<AppDispatch>();
+  const token = useSelector(selectToken);
+
+  useEffect(() => {
+    dispatch(getDashboardGroups({ token: token as string, page: 1 }));
+  }, [dispatch, token]);
+
+  const { data } = useSelector(selectDashboardGroups);
+  const renderItem: ListRenderItem<DashboardGroup> = ({ item }) => (
     <GroupItem {...item} />
   );
 
   return (
     <SafeAreaProvider>
       <FlatList
-        data={DATA}
+        data={data?.groups}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
       />

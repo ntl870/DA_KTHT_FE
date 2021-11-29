@@ -14,6 +14,7 @@ export type MenuStackParamList = {
   MenuScreen: undefined;
   EditUserScreen: undefined;
   ChangePasswordScreen: undefined;
+  FaceRegconitionScreen: undefined;
 };
 
 export type MenuScreenProps = StackNavigationProp<MenuStackParamList>;

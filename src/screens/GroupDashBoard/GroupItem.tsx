@@ -6,18 +6,21 @@ import { Avatar } from "react-native-paper";
 import { useNavigation } from "@react-navigation/core";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { GroupScreenProps } from "../../types/screens";
-import { Group } from "./GroupList";
 import styles from "./styles";
+import { DashboardGroup } from "./GroupList";
+import getNameAlias from "../../utils/GetNameAlias";
 
-const GroupItem: FC<Group> = ({
+const GroupItem: FC<DashboardGroup> = ({
   id,
   name,
   numbersOfMember,
   checkedIn,
   role,
+  avatars,
+  description,
 }) => {
+  console.log(avatars);
   const navigation = useNavigation<GroupScreenProps>();
-
   return (
     <TouchableOpacity
       activeOpacity={0.3}
@@ -46,27 +49,27 @@ const GroupItem: FC<Group> = ({
               color="#6200ee"
             />
             <View style={styles.groupItemLeftImagesGroup}>
-              <Avatar.Icon
-                size={38}
-                icon="folder"
-                style={styles.groupItemLeftImage}
-              />
-              <Avatar.Icon
-                size={38}
-                icon="folder"
-                style={styles.groupItemLeftImage}
-              />
-              <Avatar.Icon
-                size={38}
-                icon="folder"
-                style={styles.groupItemLeftImage}
-              />
-              <Avatar.Icon
-                size={38}
-                icon="folder"
-                style={styles.groupItemLeftImage}
-              />
-              <Avatar.Text size={38} label="+3" />
+              {avatars.map((item, index) => {
+                return item ? (
+                  <Avatar.Image
+                    size={38}
+                    source={{ uri: item }}
+                    style={styles.groupItemLeftImage}
+                    key={index}
+                  />
+                ) : (
+                  <Avatar.Text
+                    size={38}
+                    label={getNameAlias(item) as string}
+                    style={styles.groupItemLeftImage}
+                    key={index}
+                  />
+                );
+              })}
+
+              {numbersOfMember > 3 && (
+                <Avatar.Text size={38} label={`+${numbersOfMember - 3}`} />
+              )}
             </View>
           </View>
         </View>

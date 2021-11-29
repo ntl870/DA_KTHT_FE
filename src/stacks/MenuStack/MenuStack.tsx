@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import MenuScreen from "../../screens/Menu/Menu";
 import EditUserScreen from "../../screens/EditUser/EditUser";
+import FaceRegconition from "../../components/FaceRegconition/FaceRegconition";
 import ChangePasswordScreen from "../../screens/ChangePassword/ChangePassword";
 import Headers from "../../components/Header/Header";
 
@@ -33,6 +34,13 @@ const MenuStack: FC = () => {
               <Headers navigation={navigation} title="Change Password" />
             ),
           })}
+        />
+        <Stack.Screen
+          name="FaceRegconitionScreen"
+          component={FaceRegconition}
+          options={{
+            headerShown: false,
+          }}
         />
       </Stack.Navigator>
     </SafeAreaProvider>
