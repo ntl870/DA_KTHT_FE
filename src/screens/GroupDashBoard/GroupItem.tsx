@@ -19,7 +19,6 @@ const GroupItem: FC<DashboardGroup> = ({
   avatars,
   description,
 }) => {
-  console.log(avatars);
   const navigation = useNavigation<GroupScreenProps>();
   return (
     <TouchableOpacity
@@ -27,6 +26,7 @@ const GroupItem: FC<DashboardGroup> = ({
       onPress={() =>
         navigation.navigate("GroupDetailScreen", {
           id: id,
+          role: role,
         })
       }
     >

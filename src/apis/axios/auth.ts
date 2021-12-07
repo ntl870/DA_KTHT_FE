@@ -1,5 +1,4 @@
 import axios, { AxiosInstance } from "axios";
-import { BASE_API } from "@env";
 interface IHeaders {
   "Access-Control-Allow-Origin": "*";
   Accept: string;
@@ -16,7 +15,7 @@ export const authAPI = (token: string): AxiosInstance => {
   };
 
   return axios.create({
-    baseURL: "http://192.168.1.100:5000/api/v1",
+    baseURL: "https://dut-timetrackingapp.herokuapp.com/api/v1",
     headers: headers,
   });
 };

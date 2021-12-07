@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState, useContext, useEffect } from "react";
+import React, { FC, useRef, useState, useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -7,17 +7,18 @@ import {
   TouchableOpacity,
   PermissionsAndroid,
   Permission,
-  Text,
 } from "react-native";
 import storage from "@react-native-firebase/storage";
 import { Button, ProgressBar } from "react-native-paper";
 import { RNCamera } from "react-native-camera";
 import { selectUserInfo } from "../../store/reducers/UserSlice";
 import {
-  selectBottomBarStatus,
   enable,
   disable,
 } from "../../store/reducers/BottomBarStatusSlice";
+import LoadingOverlay from "../Loading/Loading";
+import { useNavigation } from "@react-navigation/core";
+import { MenuScreenProps } from "../../types/screens";
 import styles from "./styles";
 
 interface IPictureData {
@@ -37,6 +38,7 @@ const Camera: FC = () => {
   const { data: userInfo } = useSelector(selectUserInfo);
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch = useDispatch();
+  const navigation = useNavigation<MenuScreenProps>();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const cameraRef = useRef<any>(null);
 
@@ -46,7 +48,7 @@ const Camera: FC = () => {
       dispatch(enable());
     };
   }, [dispatch]);
-  
+
   const hasAndroidPermission = async (): Promise<boolean> => {
     const permission: Permission =
       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
@@ -67,31 +69,37 @@ const Camera: FC = () => {
         orientation: RNCamera.Constants.Orientation.landscapeLeft,
       };
       try {
-        setLoading(true);
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 20; i++) {
           const data: IPictureData = await cameraRef.current.takePictureAsync(
             options
           );
           const reference = storage().ref(
             `/Users/${userInfo?._id}/Models/${i + 1}.jpg`
           );
-          // const pathToFile = `${utils.FilePath.PICTURES_DIRECTORY}/image.jpg`;
           await reference.putFile(data.uri);
-          setTransferred((1 / 30) * (i + 1));
+          setTransferred((1 / 20) * (i + 1));
         }
-        await axios.post("http://10.0.2.2:8000/train", {
-          userId: userInfo?._id,
-        });
+        try {
+          setLoading(true);
+          await axios.post("http://10.0.2.2:8000/train", {
+            userId: userInfo?._id,
+          });
+        } catch (e) {
+          console.log(e);
+        } finally {
+          setLoading(false);
+        }
       } catch (e) {
         console.log(e);
       } finally {
         setTransferred(0);
-        setLoading(false);
+        navigation.navigate("MenuScreen");
       }
-      // const downloadURL: string = await reference.getDownloadURL();
     }
   };
-
+  if (loading) {
+    return <LoadingOverlay active={true} />;
+  }
   return (
     <SafeAreaView style={styles.root}>
       <RNCamera
@@ -111,13 +119,15 @@ const Camera: FC = () => {
           <Button icon="camera">Switch</Button>
         </TouchableOpacity>
       </View> */}
-      {loading && <ProgressBar progress={transferred} color="red" />}
+      {transferred > 0 && <ProgressBar progress={transferred} color="red" />}
       {/* {loading && <Text>Uploading...</Text>} */}
-      <View>
-        <TouchableOpacity activeOpacity={0.5} onPress={uploadPicture}>
-          <Button icon="camera">Press me</Button>
-        </TouchableOpacity>
-      </View>
+      {transferred === 0 && (
+        <View>
+          <TouchableOpacity activeOpacity={0.5} onPress={uploadPicture}>
+            <Button icon="camera">Start</Button>
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 };

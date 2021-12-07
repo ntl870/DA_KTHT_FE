@@ -21,7 +21,7 @@ export type MenuScreenProps = StackNavigationProp<MenuStackParamList>;
 
 export type GroupStackParamList = {
   GroupScreen: undefined;
-  GroupDetailScreen: { id: string } | undefined;
+  GroupDetailScreen: { id: string; role: string } | undefined;
 };
 
 export type GroupScreenProps = StackNavigationProp<GroupStackParamList>;

@@ -16,6 +16,7 @@ export interface IFormController {
   secureTextEntry?: boolean;
   style: any;
   onPress?: any;
+  type?: string;
 }
 
 const FormController: FC<IFormController> = ({
