@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState, useMemo } from "react";
 import { View, Text, ScrollView } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { ActivityIndicator, Avatar } from "react-native-paper";
@@ -20,7 +20,12 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import FunctionsFAB from "./FunctionsFAB";
 import { useIsFocused } from "@react-navigation/native";
 import AddMemberModal from "./AddMemberModal";
-
+import ModifyGroupModal from "./ModifyGroupModal";
+import {
+  selectFABStatus,
+  enable,
+  disable,
+} from "../../store/reducers/FABSlice";
 interface Props {
   route: GroupRouteProps;
   navigation: GroupScreenProps;
@@ -34,20 +39,47 @@ export interface FABAction {
 
 const GroupDetailAdmin: FC<Props> = ({ route }) => {
   const dispatch = useDispatch<AppDispatch>();
-
+  const FABVisible = useSelector(selectFABStatus).isActive;
   const token = useSelector(selectToken);
-
   const { id } = route.params as { id: string };
 
   const [isShownAddMemberModal, setIsShownAddMemberModal] = useState(false);
   const [isShownModifyGroupModal, setIsShownModifyGroupModal] = useState(false);
-  const isFocused = useIsFocused();
+  const isFocused = useIsFocused() && route.name === "GroupDetailScreen";
+
   useEffect(() => {
     dispatch(getGroupDetails({ token: token as string, id: id }));
   }, [dispatch, id, token]);
 
+  useEffect(() => {
+    dispatch(enable());
+    return () => {
+      dispatch(disable());
+    };
+  }, [dispatch]);
+
   const { data, status }: GroupDetailsData = useSelector(selectGroupDetails);
-  const groupData = data && (data[0] as Group);
+
+  const groupData = useMemo(() => {
+    return data && (data[0] as Group);
+  }, [data]);
+
+  const FABActions: FABAction[] = useMemo(
+    () => [
+      {
+        icon: "plus",
+        label: "Add",
+        onPress: () => setIsShownAddMemberModal(true),
+      },
+      {
+        icon: "account-group",
+        label: "Modify Group",
+        onPress: () => setIsShownModifyGroupModal(true),
+      },
+    ],
+    [setIsShownAddMemberModal]
+  );
+
   if (status === Status.pending) {
     return <ActivityIndicator size={30} style={styles.loadingIcon} />;
   }
@@ -61,30 +93,26 @@ const GroupDetailAdmin: FC<Props> = ({ route }) => {
     );
   }
 
-  const FABActions: FABAction[] = [
-    {
-      icon: "plus",
-      label: "Add",
-      onPress: () => setIsShownAddMemberModal(true),
-    },
-    {
-      icon: "account-group",
-      label: "Modify Group",
-      onPress: () => setIsShownModifyGroupModal(false),
-    },
-  ];
-  console.log(isShownAddMemberModal);
   return (
     <ScrollView>
       <View style={styles.root}>
         <View style={styles.topContentContainer}>
-          <Avatar.Text
-            label={String(getNameAlias(String(groupData?.name)))}
-            size={150}
-          />
+          {groupData?.groupImage ? (
+            <Avatar.Image source={{ uri: groupData?.groupImage }} size={150} />
+          ) : (
+            <Avatar.Text
+              label={getNameAlias(groupData?.name) as string}
+              size={150}
+            />
+          )}
+
           <Text style={styles.titleText}>{groupData?.name}</Text>
           <Text style={styles.membersCountText}>
             {`${groupData?.members.length} Members`}
+          </Text>
+          <Text style={styles.membersCountText}>{groupData?.description}</Text>
+          <Text style={styles.membersCountText}>
+            {`Fine per hour: ${groupData?.feePerHour} VND`}
           </Text>
         </View>
 
@@ -92,14 +120,16 @@ const GroupDetailAdmin: FC<Props> = ({ route }) => {
           <QRCode value={groupData?.secretCode} />
         </TouchableOpacity>
 
-        <FunctionsFAB visible={isFocused} actions={FABActions} />
+        {FABVisible && isFocused && (
+          <FunctionsFAB visible={FABVisible} actions={FABActions} />
+        )}
 
         <View style={styles.membersListContainer}>
-          {groupData?.members.map(({ member, _id }, index) => {
+          {groupData?.members.map(({ member, _id }) => {
             return (
               <View style={styles.memberContainer} key={_id}>
-                {member.avatar ? (
-                  <Avatar.Image source={{ uri: member.avatar }} size={60} />
+                {member?.avatar !== "" ? (
+                  <Avatar.Image source={{ uri: member?.avatar }} size={60} />
                 ) : (
                   <Avatar.Text
                     label={getNameAlias(member?.name) as string}
@@ -109,29 +139,7 @@ const GroupDetailAdmin: FC<Props> = ({ route }) => {
 
                 <View style={styles.memberName}>
                   <Text style={styles.memberNameText}>{member.name}</Text>
-                  {(() => {
-                    if (index === 0) {
-                      return (
-                        <Text style={styles.membersEmailText}>
-                          nclongkk@gmail.com
-                        </Text>
-                      );
-                    }
-                    if (index === 1) {
-                      return (
-                        <Text style={styles.membersEmailText}>
-                          vanbao1210@gmail.com
-                        </Text>
-                      );
-                    }
-                    if (index === 2) {
-                      return (
-                        <Text style={styles.membersEmailText}>
-                          ntlong870@gmail.com
-                        </Text>
-                      );
-                    }
-                  })()}
+                  <Text style={styles.membersEmailText}>{member?.email}</Text>
                 </View>
               </View>
             );
@@ -143,6 +151,15 @@ const GroupDetailAdmin: FC<Props> = ({ route }) => {
           visible={isShownAddMemberModal}
           onDismiss={() => setIsShownAddMemberModal(false)}
           groupID={id}
+        />
+      )}
+
+      {isShownModifyGroupModal && (
+        <ModifyGroupModal
+          groupID={id}
+          visible={isShownModifyGroupModal}
+          onDismiss={() => setIsShownModifyGroupModal(false)}
+          groupData={groupData as Group}
         />
       )}
     </ScrollView>

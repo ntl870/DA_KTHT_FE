@@ -17,6 +17,8 @@ export interface IFormController {
   style: any;
   onPress?: any;
   type?: string;
+  multiline?: boolean;
+  numberOfLines?: number;
 }
 
 const FormController: FC<IFormController> = ({
@@ -32,6 +34,8 @@ const FormController: FC<IFormController> = ({
   secureTextEntry,
   style,
   onPress,
+  multiline,
+  numberOfLines,
 }) => {
   return (
     <Controller
@@ -53,6 +57,8 @@ const FormController: FC<IFormController> = ({
           onChangeText={(text) => onChange(text)}
           value={value}
           defaultValue={defaultValue}
+          multiline={multiline}
+          numberOfLines={numberOfLines}
         />
       )}
     />

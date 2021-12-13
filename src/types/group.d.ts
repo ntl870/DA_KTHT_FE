@@ -8,4 +8,5 @@ interface Group {
   secretCode: string;
   feePerHour: string;
   members: IUser[];
+  groupImage?: string;
 }

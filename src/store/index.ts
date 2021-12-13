@@ -5,6 +5,8 @@ import ScheduleSlice from "./reducers/ScheduleSlice";
 import dashboardGroupSlice from "./reducers/GroupSlice";
 import GroupDetailsSlice from "./reducers/GroupDetailsSlice";
 import BottomBarStatusSlice from "./reducers/BottomBarStatusSlice";
+import FABSlice from "./reducers/FABSlice";
+
 const store = configureStore({
   reducer: {
     auth: AuthSlice,
@@ -13,6 +15,7 @@ const store = configureStore({
     dashboardGroup: dashboardGroupSlice,
     groupDetails: GroupDetailsSlice,
     bottomBarStatus: BottomBarStatusSlice,
+    FABStatus: FABSlice,
   },
 });
 

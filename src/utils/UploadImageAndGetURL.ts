@@ -1,6 +1,6 @@
 import storage from "@react-native-firebase/storage";
 
-const uploadPictureAndGetURL = async (
+export const uploadPictureAndGetURL = async (
   imageURI: string,
   refName: string,
   userID: string
@@ -10,4 +10,14 @@ const uploadPictureAndGetURL = async (
   const downloadURL: string = await reference.getDownloadURL();
   return downloadURL;
 };
-export default uploadPictureAndGetURL;
+
+export const uploadGroupPictureAndGetURL = async (
+  imageURI: string,
+  refName: string,
+  groupID: string
+): Promise<string> => {
+  const reference = storage().ref(`Groups/${groupID}/${refName}`);
+  await reference.putFile(imageURI);
+  const downloadURL: string = await reference.getDownloadURL();
+  return downloadURL;
+};

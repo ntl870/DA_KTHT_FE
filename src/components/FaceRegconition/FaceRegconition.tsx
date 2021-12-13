@@ -81,7 +81,7 @@ const Camera: FC = () => {
         }
         try {
           setLoading(true);
-          await axios.post("http://10.0.2.2:8000/train", {
+          await axios.post("https://87d2-42-117-179-248.ngrok.io/train", {
             userId: userInfo?._id,
           });
         } catch (e) {

@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { FC } from "react";
+import React, { FC, Fragment } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import * as Progress from "react-native-progress";
 import { Avatar } from "react-native-paper";
@@ -17,7 +17,6 @@ const GroupItem: FC<DashboardGroup> = ({
   checkedIn,
   role,
   avatars,
-  description,
 }) => {
   const navigation = useNavigation<GroupScreenProps>();
   return (
@@ -49,27 +48,56 @@ const GroupItem: FC<DashboardGroup> = ({
               color="#6200ee"
             />
             <View style={styles.groupItemLeftImagesGroup}>
-              {avatars.map((item, index) => {
-                return item ? (
-                  <Avatar.Image
-                    size={38}
-                    source={{ uri: item }}
-                    style={styles.groupItemLeftImage}
-                    key={index}
-                  />
-                ) : (
-                  <Avatar.Text
-                    size={38}
-                    label={getNameAlias(item) as string}
-                    style={styles.groupItemLeftImage}
-                    key={index}
-                  />
-                );
-              })}
-
-              {numbersOfMember > 3 && (
-                <Avatar.Text size={38} label={`+${numbersOfMember - 3}`} />
-              )}
+              {(() => {
+                if (numbersOfMember > 3) {
+                  return avatars.map((item, index) => {
+                    if (index < 3) {
+                      return item.avatar ? (
+                        <Avatar.Image
+                          size={38}
+                          source={{ uri: item?.avatar }}
+                          style={styles.groupItemLeftImage}
+                          key={index}
+                        />
+                      ) : (
+                        <Avatar.Text
+                          size={38}
+                          label={getNameAlias(item?.name) as string}
+                          style={styles.groupItemLeftImage}
+                          key={index}
+                        />
+                      );
+                    }
+                    if (index === 3) {
+                      return (
+                        <Avatar.Text
+                          size={38}
+                          label={`+${numbersOfMember - 3}`}
+                          key={index}
+                        />
+                      );
+                    }
+                    return <Fragment key={index} />;
+                  });
+                }
+                return avatars.map((item, index) => {
+                  return item.avatar ? (
+                    <Avatar.Image
+                      size={38}
+                      source={{ uri: item?.avatar }}
+                      style={styles.groupItemLeftImage}
+                      key={index}
+                    />
+                  ) : (
+                    <Avatar.Text
+                      size={38}
+                      label={getNameAlias(item?.name) as string}
+                      style={styles.groupItemLeftImage}
+                      key={index}
+                    />
+                  );
+                });
+              })()}
             </View>
           </View>
         </View>

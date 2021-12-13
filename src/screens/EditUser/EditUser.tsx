@@ -13,7 +13,7 @@ import FormController from "../../components/FormController/FormController";
 import { IFormController } from "../../components/FormController/FormController";
 import { selectToken } from "../../store/reducers/AuthSlice";
 import { updateClientAsync } from "../../store/reducers/UserSlice";
-import uploadPictureAndGetURL from "../../utils/UploadImageAndGetURL";
+import { uploadPictureAndGetURL } from "../../utils/UploadImageAndGetURL";
 import styles from "./styles";
 import { MenuScreenProps } from "../../types/screens";
 import LogoutButton from "../../components/LogoutButton/LogoutButton";

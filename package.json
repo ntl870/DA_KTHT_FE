@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "build:android": "cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.15.8",
@@ -27,6 +28,7 @@
     "@types/react-native-modals": "^0.19.2",
     "axios": "^0.21.4",
     "expo": "^42.0.3",
+    "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "react": "17.0.2",
     "react-hook-form": "^7.15.4",
