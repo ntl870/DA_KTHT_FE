@@ -10,7 +10,12 @@ interface Props {
 
 const styles = StyleSheet.create({
   fabGroup: {
-    paddingBottom: 50,
+    paddingBottom: 40,
+    // paddingRight: 0,
+    // display: "flex",
+    // justifyContent: "flex-end",
+    // alignItems: "flex-start",
+    // bottom: 0,
   },
 });
 

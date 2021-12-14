@@ -6,9 +6,10 @@ import { selectToken } from "../../store/reducers/AuthSlice";
 import { selectUserSchedule } from "../../store/reducers/ScheduleSlice";
 import { getUserSchedule } from "../../store/reducers/ScheduleSlice";
 import { AppDispatch } from "../../store";
-import DialogPopup from "../Dialog/Dialog";
+import DialogPopup from "../../components/Dialog/Dialog";
 import { Status } from "../../types/status";
-import styles from "./styles";
+import styles from "./ScheduleStyle";
+
 interface Event {
   key: number;
   title: string;
@@ -25,10 +26,10 @@ export interface Schedule {
   dayOfWeek?: number;
 }
 
-const Schedule: FC = () => {
+const UserSchedule: FC = () => {
   const [dialogVisible, setDialogVisible] = useState<boolean>(false);
   const [popUpKey, setPopUpKey] = useState<number | null>(0);
-  
+
   const currentWeek = useMemo(() => {
     const curr = new Date();
     const first = curr.getDate() - curr.getDay();
@@ -73,6 +74,7 @@ const Schedule: FC = () => {
   if (status !== Status.fulfilled) {
     return <ActivityIndicator style={styles.flexOne} />;
   }
+
   return (
     <>
       <Calendar
@@ -92,4 +94,4 @@ const Schedule: FC = () => {
     </>
   );
 };
-export default Schedule;
+export default UserSchedule;

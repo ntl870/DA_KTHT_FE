@@ -1,11 +1,14 @@
 import React, { FC, useEffect, useState, useMemo } from "react";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { ActivityIndicator, Avatar } from "react-native-paper";
-import QRCode from "react-native-qrcode-svg";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { AppDispatch } from "../../store";
-import { GroupScreenProps, GroupRouteProps } from "../../types/screens";
+import {
+  GroupScreenProps,
+  GroupRouteProps,
+  GroupStackParamList,
+} from "../../types/screens";
 import {
   getGroupDetails,
   selectGroupDetails,
@@ -16,7 +19,6 @@ import { Status } from "../../types/status";
 import styles from "./styles";
 import { Group } from "../../types/group";
 import getNameAlias from "../../utils/GetNameAlias";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import FunctionsFAB from "./FunctionsFAB";
 import { useIsFocused } from "@react-navigation/native";
 import AddMemberModal from "./AddMemberModal";
@@ -26,6 +28,8 @@ import {
   enable,
   disable,
 } from "../../store/reducers/FABSlice";
+import { useNavigation } from "@react-navigation/core";
+
 interface Props {
   route: GroupRouteProps;
   navigation: GroupScreenProps;
@@ -42,6 +46,7 @@ const GroupDetailAdmin: FC<Props> = ({ route }) => {
   const FABVisible = useSelector(selectFABStatus).isActive;
   const token = useSelector(selectToken);
   const { id } = route.params as { id: string };
+  const navigation = useNavigation<GroupScreenProps>();
 
   const [isShownAddMemberModal, setIsShownAddMemberModal] = useState(false);
   const [isShownModifyGroupModal, setIsShownModifyGroupModal] = useState(false);
@@ -80,6 +85,13 @@ const GroupDetailAdmin: FC<Props> = ({ route }) => {
     [setIsShownAddMemberModal]
   );
 
+  const navigateToScheduleScreen = () => {
+    navigation.navigate("UserScheduleScreen", {
+      userId: "",
+      groupId: "",
+    });
+  };
+
   if (status === Status.pending) {
     return <ActivityIndicator size={30} style={styles.loadingIcon} />;
   }
@@ -101,7 +113,7 @@ const GroupDetailAdmin: FC<Props> = ({ route }) => {
             <Avatar.Image source={{ uri: groupData?.groupImage }} size={150} />
           ) : (
             <Avatar.Text
-              label={getNameAlias(groupData?.name) as string}
+              label={getNameAlias(String(groupData?.name)) as string}
               size={150}
             />
           )}
@@ -116,10 +128,6 @@ const GroupDetailAdmin: FC<Props> = ({ route }) => {
           </Text>
         </View>
 
-        <TouchableOpacity>
-          <QRCode value={groupData?.secretCode} />
-        </TouchableOpacity>
-
         {FABVisible && isFocused && (
           <FunctionsFAB visible={FABVisible} actions={FABActions} />
         )}
@@ -127,21 +135,27 @@ const GroupDetailAdmin: FC<Props> = ({ route }) => {
         <View style={styles.membersListContainer}>
           {groupData?.members.map(({ member, _id }) => {
             return (
-              <View style={styles.memberContainer} key={_id}>
-                {member?.avatar !== "" ? (
-                  <Avatar.Image source={{ uri: member?.avatar }} size={60} />
-                ) : (
-                  <Avatar.Text
-                    label={getNameAlias(member?.name) as string}
-                    size={60}
-                  />
-                )}
+              <TouchableOpacity
+                activeOpacity={0.5}
+                key={_id}
+                onPress={navigateToScheduleScreen}
+              >
+                <View style={styles.memberContainer}>
+                  {member?.avatar !== "" ? (
+                    <Avatar.Image source={{ uri: member?.avatar }} size={60} />
+                  ) : (
+                    <Avatar.Text
+                      label={getNameAlias(member?.name) as string}
+                      size={60}
+                    />
+                  )}
 
-                <View style={styles.memberName}>
-                  <Text style={styles.memberNameText}>{member.name}</Text>
-                  <Text style={styles.membersEmailText}>{member?.email}</Text>
+                  <View style={styles.memberName}>
+                    <Text style={styles.memberNameText}>{member.name}</Text>
+                    <Text style={styles.membersEmailText}>{member?.email}</Text>
+                  </View>
                 </View>
-              </View>
+              </TouchableOpacity>
             );
           })}
         </View>

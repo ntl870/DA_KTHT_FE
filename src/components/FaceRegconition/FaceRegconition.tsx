@@ -5,17 +5,12 @@ import {
   SafeAreaView,
   View,
   TouchableOpacity,
-  PermissionsAndroid,
-  Permission,
 } from "react-native";
 import storage from "@react-native-firebase/storage";
 import { Button, ProgressBar } from "react-native-paper";
 import { RNCamera } from "react-native-camera";
 import { selectUserInfo } from "../../store/reducers/UserSlice";
-import {
-  enable,
-  disable,
-} from "../../store/reducers/BottomBarStatusSlice";
+import { enable, disable } from "../../store/reducers/BottomBarStatusSlice";
 import LoadingOverlay from "../Loading/Loading";
 import { useNavigation } from "@react-navigation/core";
 import { MenuScreenProps } from "../../types/screens";
@@ -30,10 +25,8 @@ interface IPictureData {
   deviceOrientation: number;
 }
 
-type CameraSide = "front" | "back";
 
 const Camera: FC = () => {
-  const [cameraSide, setCameraSide] = useState<CameraSide>("front");
   const [transferred, setTransferred] = useState<number>(0);
   const { data: userInfo } = useSelector(selectUserInfo);
   const [loading, setLoading] = useState<boolean>(false);
@@ -49,17 +42,6 @@ const Camera: FC = () => {
     };
   }, [dispatch]);
 
-  const hasAndroidPermission = async (): Promise<boolean> => {
-    const permission: Permission =
-      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
-    const hasPermission: boolean = await PermissionsAndroid.check(permission);
-    if (hasPermission) {
-      return true;
-    }
-
-    const status = await PermissionsAndroid.request(permission);
-    return status === "granted";
-  };
 
   const uploadPicture = async () => {
     if (cameraRef) {
@@ -85,12 +67,10 @@ const Camera: FC = () => {
             userId: userInfo?._id,
           });
         } catch (e) {
-          console.log(e);
         } finally {
           setLoading(false);
         }
       } catch (e) {
-        console.log(e);
       } finally {
         setTransferred(0);
         navigation.navigate("MenuScreen");
@@ -106,7 +86,7 @@ const Camera: FC = () => {
         ref={cameraRef}
         captureAudio={false}
         style={styles.flexOne}
-        type={RNCamera.Constants.Type[cameraSide]}
+        type="front"
         androidCameraPermissionOptions={{
           title: "Permission to use camera",
           message: "We need your permission to use your camera",

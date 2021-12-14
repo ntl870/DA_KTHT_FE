@@ -17,6 +17,7 @@ const GroupItem: FC<DashboardGroup> = ({
   checkedIn,
   role,
   avatars,
+  groupImage,
 }) => {
   const navigation = useNavigation<GroupScreenProps>();
   return (
@@ -102,12 +103,19 @@ const GroupItem: FC<DashboardGroup> = ({
           </View>
         </View>
         <View style={styles.groupItemRightContent}>
-          <Icon
-            name="arrow-circle-right"
-            size={30}
-            color="#6200ee"
-            style={{ alignSelf: "flex-end" }}
-          />
+          {groupImage ? (
+            <Avatar.Image
+              size={80}
+              source={{ uri: groupImage }}
+              style={{ alignSelf: "flex-end" }}
+            />
+          ) : (
+            <Avatar.Text
+              size={80}
+              label={getNameAlias(name) as string}
+              style={styles.groupItemLeftImage}
+            />
+          )}
 
           <Text style={styles.groupItemRightRoleText}>{role}</Text>
         </View>

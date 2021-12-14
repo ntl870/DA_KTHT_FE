@@ -5,6 +5,7 @@ import { GroupStackParamList } from "../../types/screens";
 import Headers from "../../components/Header/Header";
 import GroupList from "../../screens/GroupDashBoard/GroupList";
 import GroupDetail from "../../screens/GroupDetail/GroupDetail";
+import UserSchedule from "../../screens/GroupDashBoard/UserSchedule";
 
 const GroupStack: FC = () => {
   const Stack = createStackNavigator<GroupStackParamList>();
@@ -24,6 +25,15 @@ const GroupStack: FC = () => {
           options={({ navigation }) => ({
             header: () => (
               <Headers navigation={navigation} title="Group Details" />
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="UserScheduleScreen"
+          component={UserSchedule}
+          options={({ navigation }) => ({
+            header: () => (
+              <Headers navigation={navigation} title="User Schedule" />
             ),
           })}
         />

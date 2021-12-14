@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     color: "#6200ee",
+    // maxWidth: "90%",
   },
   groupItemLeftNumberText: {
     fontSize: 17,
@@ -46,6 +47,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "#6200ee",
+    textAlign: "right",
   },
 });
 

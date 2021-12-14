@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { useForm } from "react-hook-form";
 import { Button, Checkbox } from "react-native-paper";
@@ -14,6 +14,8 @@ import Modal, { ModalContent } from "react-native-modals";
 import { useSelector, useDispatch } from "react-redux";
 import { getGroupDetails } from "../../store/reducers/GroupDetailsSlice";
 import { AppDispatch } from "../../store";
+import { enable, disable } from "../../store/reducers/FABSlice";
+
 interface Props {
   visible: boolean;
   onDismiss: () => void;
@@ -164,6 +166,13 @@ const AddMemberModal: FC<Props> = ({ visible, groupID, onDismiss }) => {
       return clone;
     });
   };
+
+  useEffect(() => {
+    dispatch(disable());
+    return () => {
+      dispatch(enable());
+    };
+  }, [dispatch]);
 
   const onSubmit = async (form: Form) => {
     try {

@@ -21,11 +21,18 @@ import GroupItem from "./GroupItem";
 import { Status } from "../../types/status";
 import { ActivityIndicator, Text } from "react-native-paper";
 import { authAPI } from "../../apis/axios/auth";
+import { GroupScreenProps, GroupRouteProps } from "../../types/screens";
+import Headers from "../../components/Header/Header";
+import AddGroupModal from "./AddGroupModal";
+
 enum Role {
   admin = "admin",
   user = "user",
 }
-
+interface Props {
+  route: GroupRouteProps;
+  navigation: GroupScreenProps;
+}
 export interface DashboardGroup {
   id: string;
   name: string;
@@ -37,6 +44,7 @@ export interface DashboardGroup {
     name: string;
   }[];
   checkedIn: number;
+  groupImage: string;
 }
 export interface DashboardGroupsData {
   currentPage: number;
@@ -63,148 +71,68 @@ const styles = StyleSheet.create({
   },
 });
 
-const GroupList: FC = () => {
+const GroupList: FC<Props> = () => {
   const dispatch = useDispatch<AppDispatch>();
   const token = useSelector(selectToken);
   const [refreshing, setRefreshing] = useState<boolean>(false);
-  const [groups, setGroups] = useState<DashboardGroup[]>([
-    {
-      id: "6150b5c637cef39b11366cbf",
-      name: "PFIEV",
-      description: "PFIEV3 company",
-      numbersOfMember: 9,
-      role: Role.admin,
-      avatars: [
-        {
-          avatar:
-            "https://firebasestorage.googleapis.com/v0/b/daktht.appspot.com/o/Users%2F614aec646ce33eb1f0f0d5f4%2Favatar?alt=media&token=b3d23162-1431-4d88-992b-8d1494164ca4",
-          name: "Nguyen Thanh Long",
-        },
-        {
-          avatar:
-            "https://firebasestorage.googleapis.com/v0/b/daktht.appspot.com/o/Users%2F614aec646ce33eb1f0f0d5f5%2Favatar?alt=media&token=1bab911a-fe61-4139-8afd-aec3fc09e9c7",
-          name: "Ngo Cong Long",
-        },
-        {
-          avatar: "",
-          name: "Duong Van Bao",
-        },
-        {
-          avatar: "",
-          name: "Nguyen Dinh Man",
-        },
-        {
-          avatar: "",
-          name: "Tran The Nam",
-        },
-        {
-          avatar: "",
-          name: "Bui Anh Tuan",
-        },
-        {
-          avatar: "",
-          name: "Nguyen Thi Phuong Thao",
-        },
-        {
-          avatar: "",
-          name: "Do Van Duc Thanh",
-        },
-        {
-          avatar: "",
-          name: "Qui Anh Khoa",
-        },
-      ],
-      checkedIn: 0,
-    },
-  ]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [isShownAddGroupModal, setIsShownAddGroupModal] =
+    useState<boolean>(false);
 
   useEffect(() => {
     LogBox.ignoreAllLogs();
   }, []);
 
-  const fetchGroups = useCallback(() => {
-    return async (page: number): Promise<void> => {
-      setLoading(true);
-      try {
-        const { data } = await authAPI(String(token)).get("/groups", {
-          params: {
-            page: page,
-          },
-        });
-
-        setGroups((prev) => {
-          if (page === 1) {
-            return data?.groups;
-          }
-          return [...prev, ...data?.groups];
-        });
-      } catch (e) {
-      } finally {
-        setLoading(false);
-      }
-    };
-  }, [token]);
-
   useEffect(() => {
-    fetchGroups()(currentPage);
-  }, [fetchGroups, currentPage]);
+    dispatch(getDashboardGroups({ token: token as string, page: 1 }));
+  }, [dispatch, token]);
+
+  const { data, status } = useSelector(selectDashboardGroups);
 
   const renderItem: ListRenderItem<DashboardGroup> = ({ item }) => (
     <GroupItem {...item} />
   );
 
-  const onRefresh = useCallback(async () => {
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
     try {
-      setRefreshing(true);
-      await fetchGroups()(1);
+      dispatch(getDashboardGroups({ token: token as string, page: 1 }));
     } catch (e) {
     } finally {
       setRefreshing(false);
     }
-  }, [fetchGroups]);
+  }, [dispatch, token]);
 
-  const loadMoreContent = async () => {
-    console.log("........");
-    try {
-      const { data } = await authAPI(String(token)).get("/groups", {
-        params: {
-          page: currentPage + 1,
-        },
-      });
+  const actions = [
+    {
+      icon: "account-multiple-plus",
+      onPress: () => setIsShownAddGroupModal(true),
+    },
+  ];
 
-      setGroups((prev) => {
-        return [...prev, ...data?.groups];
-      });
-    } catch (e) {
-    } finally {
-      setCurrentPage((prev) => prev + 1);
-    }
-  };
-
-  if (loading || refreshing) {
+  if (status === Status.pending || refreshing) {
     return <ActivityIndicator style={styles.loading} />;
   }
 
   return (
     <SafeAreaView style={styles.container}>
+      <Headers title="Group List" disableBackAction actions={actions} />
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        onScrollEndDrag={loadMoreContent}
       >
         <FlatList
-          data={groups}
+          data={data?.groups}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
-          // onEndReached={loadMoreContent}
-          // onScrollBeginDrag={loadMoreContent}
-          initialNumToRender={4}
-          // onScroll={loadMoreContent}
         />
       </ScrollView>
+      {isShownAddGroupModal && (
+        <AddGroupModal
+          visible={isShownAddGroupModal}
+          onDismiss={() => setIsShownAddGroupModal(false)}
+        />
+      )}
     </SafeAreaView>
   );
 };

@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState, useCallback } from "react";
+import React, { FC, useMemo, useState, useEffect } from "react";
 import Modal, { ModalContent } from "react-native-modals";
 import { StyleSheet, ScrollView, View } from "react-native";
 import { Button, Avatar } from "react-native-paper";
@@ -16,7 +16,7 @@ import { AppDispatch } from "../../store";
 import getNameAlias from "../../utils/GetNameAlias";
 import { Asset, launchImageLibrary } from "react-native-image-picker";
 import { uploadGroupPictureAndGetURL } from "../../utils/UploadImageAndGetURL";
-
+import { enable, disable } from "../../store/reducers/FABSlice";
 interface Props {
   visible: boolean;
   onDismiss: () => void;
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 30,
     width: 400,
-    maxHeight: 600,
+    // maxHeight: 600,
     display: "flex",
     flexDirection: "column",
     flex: 1,
@@ -86,10 +86,33 @@ const ModifyGroupModal: FC<Props> = ({
   const [imageSelected, setImageSelected] = useState<boolean>(false);
   const [image, setImage] = useState<string>(groupData?.groupImage as string);
 
+  const selectImage = (): void => {
+    launchImageLibrary(
+      {
+        mediaType: "photo",
+        selectionLimit: 1,
+      },
+      ({ assets }) => {
+        if (assets) {
+          setImage((assets as Asset[])[0]?.uri as string);
+          setImageSelected(true);
+          return;
+        }
+        setImageSelected(false);
+      }
+    );
+  };
+
+  useEffect(() => {
+    dispatch(disable());
+    return () => {
+      dispatch(enable());
+    };
+  }, [dispatch]);
+
   const onSubmit = async (form: Form) => {
     try {
       setLoading(true);
-
       const imageURL = imageSelected
         ? await uploadGroupPictureAndGetURL(
             image,
@@ -103,9 +126,9 @@ const ModifyGroupModal: FC<Props> = ({
         feePerHour: Number(form.feePerHour),
         groupImage: imageURL ? imageURL : groupData?.groupImage,
       });
+      dispatch(getGroupDetails({ token: String(token), id: groupID }));
     } catch (e) {
     } finally {
-      dispatch(getGroupDetails({ token: String(token), id: groupID }));
       setLoading(false);
     }
   };
@@ -147,27 +170,10 @@ const ModifyGroupModal: FC<Props> = ({
     ];
   }, [control, groupData]);
 
-  const selectImage = (): void => {
-    launchImageLibrary(
-      {
-        mediaType: "photo",
-        selectionLimit: 1,
-      },
-      ({ assets }) => {
-        if (assets) {
-          setImage((assets as Asset[])[0]?.uri as string);
-          setImageSelected(true);
-        } else {
-          setImageSelected(false);
-        }
-      }
-    );
-  };
-
   return (
     <Modal visible={visible} onTouchOutside={onDismiss}>
-      <ModalContent style={styles.container}>
-        <ScrollView>
+      <ScrollView>
+        <ModalContent style={styles.container}>
           <View style={styles.imageContainer}>
             {image ? (
               <Avatar.Image
@@ -213,8 +219,8 @@ const ModifyGroupModal: FC<Props> = ({
             </Button>
           </View>
           <MemberList id={groupID} groupData={groupData} />
-        </ScrollView>
-      </ModalContent>
+        </ModalContent>
+      </ScrollView>
     </Modal>
   );
 };

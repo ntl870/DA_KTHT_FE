@@ -1,11 +1,14 @@
-import React, { FC, useEffect } from "react";
-import { View, Text, ScrollView } from "react-native";
+import React, { FC, useEffect, useState, useMemo } from "react";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { ActivityIndicator, Avatar } from "react-native-paper";
-import QRCode from "react-native-qrcode-svg";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { AppDispatch } from "../../store";
-import { GroupScreenProps, GroupRouteProps } from "../../types/screens";
+import {
+  GroupScreenProps,
+  GroupRouteProps,
+  GroupStackParamList,
+} from "../../types/screens";
 import {
   getGroupDetails,
   selectGroupDetails,
@@ -16,23 +19,56 @@ import { Status } from "../../types/status";
 import styles from "./styles";
 import { Group } from "../../types/group";
 import getNameAlias from "../../utils/GetNameAlias";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import FunctionsFAB from "./FunctionsFAB";
+import { useIsFocused } from "@react-navigation/native";
+import AddMemberModal from "./AddMemberModal";
+import ModifyGroupModal from "./ModifyGroupModal";
+import {
+  selectFABStatus,
+  enable,
+  disable,
+} from "../../store/reducers/FABSlice";
+import { useNavigation } from "@react-navigation/core";
+import { selectUserInfo } from "../../store/reducers/UserSlice";
+
 interface Props {
   route: GroupRouteProps;
   navigation: GroupScreenProps;
 }
 
+export interface FABAction {
+  icon: string;
+  label: string;
+  onPress: () => void;
+}
+
 const GroupDetailUser: FC<Props> = ({ route }) => {
   const dispatch = useDispatch<AppDispatch>();
   const token = useSelector(selectToken);
+  const userID = useSelector(selectUserInfo).data?._id;
   const { id } = route.params as { id: string };
+  const navigation = useNavigation<GroupScreenProps>();
+
+  const [isShownAddMemberModal, setIsShownAddMemberModal] = useState(false);
+  const [isShownModifyGroupModal, setIsShownModifyGroupModal] = useState(false);
 
   useEffect(() => {
     dispatch(getGroupDetails({ token: token as string, id: id }));
   }, [dispatch, id, token]);
 
   const { data, status }: GroupDetailsData = useSelector(selectGroupDetails);
-  const groupData = data && (data[0] as Group);
+
+  const groupData = useMemo(() => {
+    return data && (data[0] as Group);
+  }, [data]);
+
+  const navigateToScheduleScreen = () => {
+    navigation.navigate("UserScheduleScreen", {
+      userId: "",
+      groupId: "",
+    });
+  };
+
   if (status === Status.pending) {
     return <ActivityIndicator size={30} style={styles.loadingIcon} />;
   }
@@ -50,24 +86,75 @@ const GroupDetailUser: FC<Props> = ({ route }) => {
     <ScrollView>
       <View style={styles.root}>
         <View style={styles.topContentContainer}>
-          <Avatar.Text
-            label={String(getNameAlias(String(groupData?.name)))}
-            size={150}
-          />
+          {groupData?.groupImage ? (
+            <Avatar.Image source={{ uri: groupData?.groupImage }} size={150} />
+          ) : (
+            <Avatar.Text
+              label={getNameAlias(String(groupData?.name)) as string}
+              size={150}
+            />
+          )}
+
           <Text style={styles.titleText}>{groupData?.name}</Text>
           <Text style={styles.membersCountText}>
             {`${groupData?.members.length} Members`}
           </Text>
+          <Text style={styles.membersCountText}>{groupData?.description}</Text>
+          <Text style={styles.membersCountText}>
+            {`Fine per hour: ${groupData?.feePerHour} VND`}
+          </Text>
         </View>
-        <TouchableOpacity>
-          <QRCode value={groupData?.secretCode} />
-        </TouchableOpacity>
+
         <View style={styles.membersListContainer}>
-          {groupData?.members.map(({ member, _id }, index) => {
+          {groupData?.members.map(({ member, _id }) => {
+            if (userID === member?._id) {
+              return (
+                <TouchableOpacity
+                  activeOpacity={0.5}
+                  key={_id}
+                  onPress={navigateToScheduleScreen}
+                >
+                  <View
+                    style={{
+                      ...styles.memberContainer,
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <View
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                      }}
+                    >
+                      {member?.avatar !== "" ? (
+                        <Avatar.Image
+                          source={{ uri: member?.avatar }}
+                          size={60}
+                        />
+                      ) : (
+                        <Avatar.Text
+                          label={getNameAlias(member?.name) as string}
+                          size={60}
+                        />
+                      )}
+
+                      <View style={styles.memberName}>
+                        <Text style={styles.memberNameText}>{member.name}</Text>
+                        <Text style={styles.membersEmailText}>
+                          {member?.email}
+                        </Text>
+                      </View>
+                    </View>
+
+                    <Text style={styles.memberNameText}>You</Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            }
             return (
-              <View style={styles.memberContainer} key={_id}>
-                {member.avatar ? (
-                  <Avatar.Image source={{ uri: member.avatar }} size={60} />
+              <View style={styles.memberContainer}>
+                {member?.avatar !== "" ? (
+                  <Avatar.Image source={{ uri: member?.avatar }} size={60} />
                 ) : (
                   <Avatar.Text
                     label={getNameAlias(member?.name) as string}
@@ -77,35 +164,29 @@ const GroupDetailUser: FC<Props> = ({ route }) => {
 
                 <View style={styles.memberName}>
                   <Text style={styles.memberNameText}>{member.name}</Text>
-                  {(() => {
-                    if (index === 0) {
-                      return (
-                        <Text style={styles.membersEmailText}>
-                          nclongkk@gmail.com
-                        </Text>
-                      );
-                    }
-                    if (index === 1) {
-                      return (
-                        <Text style={styles.membersEmailText}>
-                          vanbao1210@gmail.com
-                        </Text>
-                      );
-                    }
-                    if (index === 2) {
-                      return (
-                        <Text style={styles.membersEmailText}>
-                          ntlong870@gmail.com
-                        </Text>
-                      );
-                    }
-                  })()}
+                  <Text style={styles.membersEmailText}>{member?.email}</Text>
                 </View>
               </View>
             );
           })}
         </View>
       </View>
+      {isShownAddMemberModal && (
+        <AddMemberModal
+          visible={isShownAddMemberModal}
+          onDismiss={() => setIsShownAddMemberModal(false)}
+          groupID={id}
+        />
+      )}
+
+      {isShownModifyGroupModal && (
+        <ModifyGroupModal
+          groupID={id}
+          visible={isShownModifyGroupModal}
+          onDismiss={() => setIsShownModifyGroupModal(false)}
+          groupData={groupData as Group}
+        />
+      )}
     </ScrollView>
   );
 };
