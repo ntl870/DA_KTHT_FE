@@ -1,11 +1,7 @@
 import React, { FC, useRef, useState, useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  SafeAreaView,
-  View,
-  TouchableOpacity,
-} from "react-native";
+import { SafeAreaView, View, TouchableOpacity } from "react-native";
 import storage from "@react-native-firebase/storage";
 import { Button, ProgressBar } from "react-native-paper";
 import { RNCamera } from "react-native-camera";
@@ -25,7 +21,6 @@ interface IPictureData {
   deviceOrientation: number;
 }
 
-
 const Camera: FC = () => {
   const [transferred, setTransferred] = useState<number>(0);
   const { data: userInfo } = useSelector(selectUserInfo);
@@ -41,7 +36,6 @@ const Camera: FC = () => {
       dispatch(enable());
     };
   }, [dispatch]);
-
 
   const uploadPicture = async () => {
     if (cameraRef) {

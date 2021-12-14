@@ -6,10 +6,8 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  VirtualizedList,
   LogBox,
 } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { selectToken } from "../../store/reducers/AuthSlice";
@@ -19,8 +17,7 @@ import {
 } from "../../store/reducers/GroupSlice";
 import GroupItem from "./GroupItem";
 import { Status } from "../../types/status";
-import { ActivityIndicator, Text } from "react-native-paper";
-import { authAPI } from "../../apis/axios/auth";
+import { ActivityIndicator } from "react-native-paper";
 import { GroupScreenProps, GroupRouteProps } from "../../types/screens";
 import Headers from "../../components/Header/Header";
 import AddGroupModal from "./AddGroupModal";

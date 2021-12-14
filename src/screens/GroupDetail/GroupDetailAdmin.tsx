@@ -7,7 +7,6 @@ import { AppDispatch } from "../../store";
 import {
   GroupScreenProps,
   GroupRouteProps,
-  GroupStackParamList,
 } from "../../types/screens";
 import {
   getGroupDetails,

@@ -18,9 +18,7 @@ const FABStatus = createSlice({
   },
 });
 
-export const selectFABStatus = (
-  state: RootState
-): { isActive: boolean } => {
+export const selectFABStatus = (state: RootState): { isActive: boolean } => {
   return state.FABStatus;
 };
 export const { enable, disable } = FABStatus.actions;

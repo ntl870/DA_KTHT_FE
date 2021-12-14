@@ -28,7 +28,7 @@ export interface Schedule {
 const Schedule: FC = () => {
   const [dialogVisible, setDialogVisible] = useState<boolean>(false);
   const [popUpKey, setPopUpKey] = useState<number | null>(0);
-  
+
   const currentWeek = useMemo(() => {
     const curr = new Date();
     const first = curr.getDate() - curr.getDay();

@@ -33,6 +33,7 @@
     "keyword-spacing": "warn",
     "unused-imports/no-unused-imports": "warn",
     "quotes": ["warn", "double"],
-    "linebreak-style": ["error", "unix"]
+    "linebreak-style": ["error", "unix"],
+    "react-native/no-inline-styles": "off"
   }
 }

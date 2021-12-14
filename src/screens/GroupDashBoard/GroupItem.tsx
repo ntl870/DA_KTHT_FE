@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, { FC, Fragment } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import * as Progress from "react-native-progress";

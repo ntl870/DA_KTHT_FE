@@ -42,6 +42,7 @@ const userScheduleSlice = createSlice({
   },
 });
 
-export const selectUserSchedule = (state: RootState): ScheduleData => state.schedule;
+export const selectUserSchedule = (state: RootState): ScheduleData =>
+  state.schedule;
 
 export default userScheduleSlice.reducer;

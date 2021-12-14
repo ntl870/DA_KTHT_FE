@@ -7,7 +7,6 @@ import { AppDispatch } from "../../store";
 import {
   GroupScreenProps,
   GroupRouteProps,
-  GroupStackParamList,
 } from "../../types/screens";
 import {
   getGroupDetails,
@@ -19,15 +18,10 @@ import { Status } from "../../types/status";
 import styles from "./styles";
 import { Group } from "../../types/group";
 import getNameAlias from "../../utils/GetNameAlias";
-import FunctionsFAB from "./FunctionsFAB";
-import { useIsFocused } from "@react-navigation/native";
 import AddMemberModal from "./AddMemberModal";
 import ModifyGroupModal from "./ModifyGroupModal";
-import {
-  selectFABStatus,
-  enable,
-  disable,
-} from "../../store/reducers/FABSlice";
+
+
 import { useNavigation } from "@react-navigation/core";
 import { selectUserInfo } from "../../store/reducers/UserSlice";
 

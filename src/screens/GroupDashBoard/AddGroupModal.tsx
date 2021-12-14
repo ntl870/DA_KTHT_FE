@@ -1,18 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { FC, useState } from "react";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { StyleSheet, View, ScrollView } from "react-native";
 import { useForm } from "react-hook-form";
-import { Button, Checkbox } from "react-native-paper";
+import { Button } from "react-native-paper";
 import FormController, {
   IFormController,
 } from "../../components/FormController/FormController";
-import validateEmail from "../../utils/ValidateEmail";
 import { authAPI } from "../../apis/axios/auth";
 import { selectToken } from "../../store/reducers/AuthSlice";
-import DatePicker from "react-native-date-picker";
 import Modal, { ModalContent } from "react-native-modals";
 import { useSelector, useDispatch } from "react-redux";
-import { getGroupDetails } from "../../store/reducers/GroupDetailsSlice";
 import { getDashboardGroups } from "../../store/reducers/GroupSlice";
 import { AppDispatch } from "../../store";
 interface Props {
