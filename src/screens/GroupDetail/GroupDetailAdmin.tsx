@@ -1,19 +1,15 @@
-import React, { FC, useEffect, useState, useMemo } from "react";
+import React, { FC, useEffect, useState, useMemo, useCallback } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { ActivityIndicator, Avatar } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { AppDispatch } from "../../store";
-import {
-  GroupScreenProps,
-  GroupRouteProps,
-} from "../../types/screens";
+import { GroupScreenProps, GroupRouteProps } from "../../types/screens";
 import {
   getGroupDetails,
   selectGroupDetails,
   GroupDetailsData,
 } from "../../store/reducers/GroupDetailsSlice";
-import { selectToken } from "../../store/reducers/AuthSlice";
 import { Status } from "../../types/status";
 import styles from "./styles";
 import { Group } from "../../types/group";
@@ -28,7 +24,9 @@ import {
   disable,
 } from "../../store/reducers/FABSlice";
 import { useNavigation } from "@react-navigation/core";
-
+import { useToken } from "../../hooks/useToken";
+import { authAPI } from "../../apis/axios/auth";
+import { useSnackbarContext } from "../../hooks/useSnackBarContext";
 interface Props {
   route: GroupRouteProps;
   navigation: GroupScreenProps;
@@ -43,13 +41,13 @@ export interface FABAction {
 const GroupDetailAdmin: FC<Props> = ({ route }) => {
   const dispatch = useDispatch<AppDispatch>();
   const FABVisible = useSelector(selectFABStatus).isActive;
-  const token = useSelector(selectToken);
+  const { token } = useToken();
   const { id } = route.params as { id: string };
   const navigation = useNavigation<GroupScreenProps>();
-
   const [isShownAddMemberModal, setIsShownAddMemberModal] = useState(false);
   const [isShownModifyGroupModal, setIsShownModifyGroupModal] = useState(false);
   const isFocused = useIsFocused() && route.name === "GroupDetailScreen";
+  const { setMessage } = useSnackbarContext();
 
   useEffect(() => {
     dispatch(getGroupDetails({ token: token as string, id: id }));
@@ -62,11 +60,17 @@ const GroupDetailAdmin: FC<Props> = ({ route }) => {
     };
   }, [dispatch]);
 
-  const { data, status }: GroupDetailsData = useSelector(selectGroupDetails);
+  const { data: groupData, status }: GroupDetailsData =
+    useSelector(selectGroupDetails);
 
-  const groupData = useMemo(() => {
-    return data && (data[0] as Group);
-  }, [data]);
+  const sendEmail = useCallback(async () => {
+    try {
+      await authAPI(String(token)).post(`groups/${groupData?._id}/sendEmail`);
+      setMessage("Email sent successfully");
+    } catch (err) {
+      setMessage("Error sending email");
+    }
+  }, [token, groupData, setMessage]);
 
   const FABActions: FABAction[] = useMemo(
     () => [
@@ -80,14 +84,19 @@ const GroupDetailAdmin: FC<Props> = ({ route }) => {
         label: "Modify Group",
         onPress: () => setIsShownModifyGroupModal(true),
       },
+      {
+        icon: "email",
+        label: "Send Statistic Email",
+        onPress: () => sendEmail(),
+      },
     ],
-    [setIsShownAddMemberModal]
+    [setIsShownAddMemberModal, sendEmail]
   );
 
-  const navigateToScheduleScreen = () => {
+  const navigateToScheduleScreen = (userId: string, groupId: string) => {
     navigation.navigate("UserScheduleScreen", {
-      userId: "",
-      groupId: "",
+      userId,
+      groupId,
     });
   };
 
@@ -132,31 +141,54 @@ const GroupDetailAdmin: FC<Props> = ({ route }) => {
         )}
 
         <View style={styles.membersListContainer}>
-          {groupData?.members.map(({ member, _id }) => {
-            return (
-              <TouchableOpacity
-                activeOpacity={0.5}
-                key={_id}
-                onPress={navigateToScheduleScreen}
-              >
-                <View style={styles.memberContainer}>
-                  {member?.avatar !== "" ? (
-                    <Avatar.Image source={{ uri: member?.avatar }} size={60} />
-                  ) : (
-                    <Avatar.Text
-                      label={getNameAlias(member?.name) as string}
-                      size={60}
-                    />
-                  )}
+          {groupData?.members.map(
+            ({ member, _id, hasScheduleToday, checkedIn }) => {
+              return (
+                <TouchableOpacity
+                  activeOpacity={0.5}
+                  key={_id}
+                  onPress={() =>
+                    navigateToScheduleScreen(member._id, groupData?._id)
+                  }
+                >
+                  <View style={styles.memberContainerAdmin}>
+                    <View style={styles.memberInfo}>
+                      {member?.avatar !== "" ? (
+                        <Avatar.Image
+                          source={{ uri: member?.avatar }}
+                          size={60}
+                        />
+                      ) : (
+                        <Avatar.Text
+                          label={getNameAlias(member?.name) as string}
+                          size={60}
+                        />
+                      )}
 
-                  <View style={styles.memberName}>
-                    <Text style={styles.memberNameText}>{member.name}</Text>
-                    <Text style={styles.membersEmailText}>{member?.email}</Text>
+                      <View style={styles.memberName}>
+                        <Text style={styles.memberNameText}>{member.name}</Text>
+                        <Text style={styles.membersEmailText}>
+                          {member?.email}
+                        </Text>
+                      </View>
+                    </View>
+
+                    {(() => {
+                      if (hasScheduleToday) {
+                        return (
+                          <Icon
+                            name="check-circle"
+                            size={30}
+                            color={checkedIn ? "#77C66E" : "#808080"}
+                          />
+                        );
+                      }
+                    })()}
                   </View>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
+                </TouchableOpacity>
+              );
+            }
+          )}
         </View>
       </View>
       {isShownAddMemberModal && (

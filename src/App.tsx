@@ -13,6 +13,7 @@ import { getClientAsync } from "./store/reducers/UserSlice";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import NavigationBar from "./components/NavigationBar/NavigationBar";
 import { selectBottomBarStatus } from "./store/reducers/BottomBarStatusSlice";
+import { SnackbarProvider } from "./hooks/useSnackBarContext";
 
 const App: FC = () => {
   const dispatch = useDispatch();
@@ -39,23 +40,25 @@ const App: FC = () => {
     <SafeAreaProvider>
       <StatusBar />
       {isSignedIn ? (
-        <NavigationContainer>
-          <Tab.Navigator
-            tabBar={(props) =>
-              bottomBarStatus.isActive && <NavigationBar {...props} />
-            }
-            screenOptions={{ headerShown: false }}
-          >
-            <Tab.Screen name="Home" component={GroupStack} />
-            <Tab.Screen
-              name="Menu"
-              component={MenuStack}
-              options={{
-                headerShown: false,
-              }}
-            />
-          </Tab.Navigator>
-        </NavigationContainer>
+        <SnackbarProvider>
+          <NavigationContainer>
+            <Tab.Navigator
+              tabBar={(props) =>
+                bottomBarStatus.isActive && <NavigationBar {...props} />
+              }
+              screenOptions={{ headerShown: false }}
+            >
+              <Tab.Screen name="Home" component={GroupStack} />
+              <Tab.Screen
+                name="Menu"
+                component={MenuStack}
+                options={{
+                  headerShown: false,
+                }}
+              />
+            </Tab.Navigator>
+          </NavigationContainer>
+        </SnackbarProvider>
       ) : (
         <AuthStack />
       )}

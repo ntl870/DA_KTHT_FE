@@ -7,4 +7,6 @@ export interface IUser {
   email: string;
   phone?: string;
   createdAt?: string;
+  hasScheduleToday?: boolean;
+  checkedIn?: boolean;
 }

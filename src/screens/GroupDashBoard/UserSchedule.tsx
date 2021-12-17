@@ -2,13 +2,15 @@ import { Calendar, ICalendarEvent } from "react-native-big-calendar";
 import React, { FC, useMemo, useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ActivityIndicator } from "react-native-paper";
-import { selectToken } from "../../store/reducers/AuthSlice";
+import { useToken } from "../../hooks/useToken";
 import { selectUserSchedule } from "../../store/reducers/ScheduleSlice";
 import { getUserSchedule } from "../../store/reducers/ScheduleSlice";
 import { AppDispatch } from "../../store";
 import DialogPopup from "../../components/Dialog/Dialog";
 import { Status } from "../../types/status";
 import styles from "./ScheduleStyle";
+import { authAPI } from "../../apis/axios/auth";
+import { GroupRouteProps, GroupScreenProps } from "../../types/screens";
 
 interface Event {
   key: number;
@@ -26,10 +28,15 @@ export interface Schedule {
   dayOfWeek?: number;
 }
 
-const UserSchedule: FC = () => {
+interface Props {
+  route: GroupRouteProps;
+  navigation: GroupScreenProps;
+}
+
+const UserSchedule: FC<Props> = ({ route }) => {
   const [dialogVisible, setDialogVisible] = useState<boolean>(false);
   const [popUpKey, setPopUpKey] = useState<number | null>(0);
-
+  const { userId, groupId } = route?.params;
   const currentWeek = useMemo(() => {
     const curr = new Date();
     const first = curr.getDate() - curr.getDay();
@@ -41,13 +48,14 @@ const UserSchedule: FC = () => {
     return week;
   }, []);
 
-  const dispatch = useDispatch<AppDispatch>();
-  const token = useSelector(selectToken);
+  const { token } = useToken();
   const { data: ScheduleData, status } = useSelector(selectUserSchedule);
 
-  const fetchSchedule = useCallback(() => {
-    dispatch(getUserSchedule(token as string));
-  }, [dispatch, token]);
+  const fetchSchedule = useCallback(async () => {
+    try {
+      await authAPI(String(token)).get(`groups/${groupId}/member/${userId}`);
+    } catch (err) {}
+  }, [token, groupId, userId]);
 
   useEffect(() => {
     fetchSchedule();

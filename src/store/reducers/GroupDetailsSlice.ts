@@ -6,7 +6,7 @@ import { Status } from "../../types/status";
 
 export const getGroupDetails = createAsyncThunk(
   "group/details",
-  async ({ token, id }: { token: string; id: string }): Promise<Group[]> => {
+  async ({ token, id }: { token: string; id: string }): Promise<Group> => {
     const { data } = await authAPI(token).get(`/groups/${id}`);
     return data;
   }
@@ -14,7 +14,7 @@ export const getGroupDetails = createAsyncThunk(
 
 export interface GroupDetailsData {
   status: Status;
-  data: Group[] | null;
+  data: Group | null;
 }
 
 const initialState: GroupDetailsData = {
@@ -29,7 +29,7 @@ const groupDetailsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(
       getGroupDetails.fulfilled,
-      (state, action: PayloadAction<Group[]>) => {
+      (state, action: PayloadAction<Group>) => {
         state.status = Status.fulfilled;
         state.data = action.payload;
       }

@@ -1,13 +1,10 @@
-import React, { FC, useEffect, useState, useMemo } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { ActivityIndicator, Avatar } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { AppDispatch } from "../../store";
-import {
-  GroupScreenProps,
-  GroupRouteProps,
-} from "../../types/screens";
+import { GroupScreenProps, GroupRouteProps } from "../../types/screens";
 import {
   getGroupDetails,
   selectGroupDetails,
@@ -20,7 +17,6 @@ import { Group } from "../../types/group";
 import getNameAlias from "../../utils/GetNameAlias";
 import AddMemberModal from "./AddMemberModal";
 import ModifyGroupModal from "./ModifyGroupModal";
-
 
 import { useNavigation } from "@react-navigation/core";
 import { selectUserInfo } from "../../store/reducers/UserSlice";
@@ -50,11 +46,8 @@ const GroupDetailUser: FC<Props> = ({ route }) => {
     dispatch(getGroupDetails({ token: token as string, id: id }));
   }, [dispatch, id, token]);
 
-  const { data, status }: GroupDetailsData = useSelector(selectGroupDetails);
-
-  const groupData = useMemo(() => {
-    return data && (data[0] as Group);
-  }, [data]);
+  const { data: groupData, status }: GroupDetailsData =
+    useSelector(selectGroupDetails);
 
   const navigateToScheduleScreen = () => {
     navigation.navigate("UserScheduleScreen", {
@@ -100,69 +93,104 @@ const GroupDetailUser: FC<Props> = ({ route }) => {
         </View>
 
         <View style={styles.membersListContainer}>
-          {groupData?.members.map(({ member, _id }) => {
-            if (userID === member?._id) {
-              return (
-                <TouchableOpacity
-                  activeOpacity={0.5}
-                  key={_id}
-                  onPress={navigateToScheduleScreen}
-                >
-                  <View
-                    style={{
-                      ...styles.memberContainer,
-                      justifyContent: "space-between",
-                    }}
+          {groupData?.members.map(
+            ({ member, _id, hasScheduleToday, checkedIn }) => {
+              if (userID === member?._id) {
+                return (
+                  <TouchableOpacity
+                    activeOpacity={0.5}
+                    key={_id}
+                    onPress={navigateToScheduleScreen}
                   >
                     <View
                       style={{
-                        display: "flex",
-                        flexDirection: "row",
+                        ...styles.memberContainerUser,
+                        justifyContent: "space-between",
                       }}
                     >
-                      {member?.avatar !== "" ? (
-                        <Avatar.Image
-                          source={{ uri: member?.avatar }}
-                          size={60}
-                        />
-                      ) : (
-                        <Avatar.Text
-                          label={getNameAlias(member?.name) as string}
-                          size={60}
-                        />
-                      )}
+                      <View
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                        }}
+                      >
+                        {member?.avatar !== "" ? (
+                          <Avatar.Image
+                            source={{ uri: member?.avatar }}
+                            size={60}
+                          />
+                        ) : (
+                          <Avatar.Text
+                            label={getNameAlias(member?.name) as string}
+                            size={60}
+                          />
+                        )}
 
-                      <View style={styles.memberName}>
-                        <Text style={styles.memberNameText}>{member.name}</Text>
-                        <Text style={styles.membersEmailText}>
-                          {member?.email}
-                        </Text>
+                        <View style={styles.memberName}>
+                          <Text style={styles.memberNameText}>
+                            {member.name}
+                          </Text>
+                          <Text style={styles.membersEmailText}>
+                            {member?.email}
+                          </Text>
+                        </View>
+                      </View>
+                      <View>
+                        {(() => {
+                          if (hasScheduleToday) {
+                            return (
+                              <Icon
+                                name="check-circle"
+                                size={30}
+                                color={checkedIn ? "#77C66E" : "#808080"}
+                              />
+                            );
+                          }
+                        })()}
+                        <Text style={styles.memberNameText}>You</Text>
                       </View>
                     </View>
+                  </TouchableOpacity>
+                );
+              }
+              return (
+                <View style={styles.memberContainerAdmin}>
+                  <View style={styles.memberInfo}>
+                    {member?.avatar !== "" ? (
+                      <Avatar.Image
+                        source={{ uri: member?.avatar }}
+                        size={60}
+                      />
+                    ) : (
+                      <Avatar.Text
+                        label={getNameAlias(member?.name) as string}
+                        size={60}
+                      />
+                    )}
 
-                    <Text style={styles.memberNameText}>You</Text>
+                    <View style={styles.memberName}>
+                      <Text style={styles.memberNameText}>{member.name}</Text>
+                      <Text style={styles.membersEmailText}>
+                        {member?.email}
+                      </Text>
+                    </View>
                   </View>
-                </TouchableOpacity>
+
+                  {(() => {
+                    if (hasScheduleToday) {
+                      return (
+                        <Icon
+                          name="check-circle"
+                          size={30}
+                          color={checkedIn ? "#77C66E" : "#808080"}
+                        />
+                      );
+                    }
+                  })()}
+                </View>
               );
             }
-            return (
-              <View style={styles.memberContainer}>
-                {member?.avatar !== "" ? (
-                  <Avatar.Image source={{ uri: member?.avatar }} size={60} />
-                ) : (
-                  <Avatar.Text
-                    label={getNameAlias(member?.name) as string}
-                    size={60}
-                  />
-                )}
-
-                <View style={styles.memberName}>
-                  <Text style={styles.memberNameText}>{member.name}</Text>
-                  <Text style={styles.membersEmailText}>{member?.email}</Text>
-                </View>
-              </View>
-            );
-          })}
+          )}
         </View>
       </View>
       {isShownAddMemberModal && (

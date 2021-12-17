@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: 10,
   },
-  memberContainer: {
+  memberContainerUser: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-start",
@@ -57,6 +57,21 @@ const styles = StyleSheet.create({
     borderColor: "#6200ee",
     padding: 10,
     borderRadius: 10,
+  },
+  memberContainerAdmin: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 10,
+    borderWidth: 2,
+    borderColor: "#6200ee",
+    padding: 10,
+    borderRadius: 10,
+  },
+  memberInfo: {
+    display: "flex",
+    flexDirection: "row",
   },
   memberName: {
     display: "flex",
