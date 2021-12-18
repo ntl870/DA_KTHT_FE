@@ -11,6 +11,7 @@ import Modal, { ModalContent } from "react-native-modals";
 import { useSelector, useDispatch } from "react-redux";
 import { getDashboardGroups } from "../../store/reducers/GroupSlice";
 import { AppDispatch } from "../../store";
+import { useSnackbarContext } from "../../hooks/useSnackBarContext";
 interface Props {
   visible: boolean;
   onDismiss: () => void;
@@ -58,7 +59,7 @@ const AddGroupModal: FC<Props> = ({ visible, onDismiss }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { control, handleSubmit } = useForm();
   const [loading, setLoading] = useState(false);
-
+  const { setMessage } = useSnackbarContext();
   const formControllerProps: IFormController[] = [
     {
       name: "name",
@@ -94,8 +95,10 @@ const AddGroupModal: FC<Props> = ({ visible, onDismiss }) => {
   const onSubmit = async (form: Form) => {
     try {
       setLoading(true);
-      await authAPI(String(token)).put("/groups", form);
+      await authAPI(String(token)).post("/groups", form);
+      setMessage("Add group successfully");
     } catch (err) {
+      setMessage("Add group failed");
     } finally {
       dispatch(getDashboardGroups({ token: String(token), page: 1 }));
       setLoading(false);

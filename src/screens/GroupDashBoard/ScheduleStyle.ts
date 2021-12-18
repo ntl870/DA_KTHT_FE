@@ -23,6 +23,22 @@ const styles = StyleSheet.create({
   mediumText: {
     fontSize: 15,
   },
+  userInfos: {
+    display: "flex",
+    flexDirection: "row",
+    alignContent: "center",
+    alignItems: "center",
+    padding: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    margin: 10,
+    borderColor: "#6200ee",
+  },
+  userInfosUpperText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#6200ee",
+  },
 });
 
 export default styles;

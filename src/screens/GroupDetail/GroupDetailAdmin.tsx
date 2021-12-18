@@ -93,10 +93,16 @@ const GroupDetailAdmin: FC<Props> = ({ route }) => {
     [setIsShownAddMemberModal, sendEmail]
   );
 
-  const navigateToScheduleScreen = (userId: string, groupId: string) => {
+  const navigateToScheduleScreen = (
+    userId: string,
+    groupId: string,
+    userName: string
+  ) => {
     navigation.navigate("UserScheduleScreen", {
       userId,
       groupId,
+      userName,
+      name: groupData?.name,
     });
   };
 
@@ -148,7 +154,11 @@ const GroupDetailAdmin: FC<Props> = ({ route }) => {
                   activeOpacity={0.5}
                   key={_id}
                   onPress={() =>
-                    navigateToScheduleScreen(member._id, groupData?._id)
+                    navigateToScheduleScreen(
+                      member._id,
+                      groupData?._id,
+                      member.name
+                    )
                   }
                 >
                   <View style={styles.memberContainerAdmin}>

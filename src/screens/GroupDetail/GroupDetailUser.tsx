@@ -49,10 +49,16 @@ const GroupDetailUser: FC<Props> = ({ route }) => {
   const { data: groupData, status }: GroupDetailsData =
     useSelector(selectGroupDetails);
 
-  const navigateToScheduleScreen = () => {
+  const navigateToScheduleScreen = (
+    userId: string,
+    groupId: string,
+    userName: string
+  ) => {
     navigation.navigate("UserScheduleScreen", {
-      userId: "",
-      groupId: "",
+      userId,
+      groupId,
+      userName,
+      name: groupData?.name,
     });
   };
 
@@ -100,7 +106,13 @@ const GroupDetailUser: FC<Props> = ({ route }) => {
                   <TouchableOpacity
                     activeOpacity={0.5}
                     key={_id}
-                    onPress={navigateToScheduleScreen}
+                    onPress={() =>
+                      navigateToScheduleScreen(
+                        member?._id,
+                        groupData?._id,
+                        member?.name
+                      )
+                    }
                   >
                     <View
                       style={{

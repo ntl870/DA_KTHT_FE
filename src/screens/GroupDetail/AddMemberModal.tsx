@@ -15,6 +15,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getGroupDetails } from "../../store/reducers/GroupDetailsSlice";
 import { AppDispatch } from "../../store";
 import { enable, disable } from "../../store/reducers/FABSlice";
+import { useSnackbarContext } from "../../hooks/useSnackBarContext";
 
 interface Props {
   visible: boolean;
@@ -84,6 +85,7 @@ const formatDate = (date: Date) => {
 };
 
 const AddMemberModal: FC<Props> = ({ visible, groupID, onDismiss }) => {
+  const { setMessage } = useSnackbarContext();
   const token = useSelector(selectToken);
   const dispatch = useDispatch<AppDispatch>();
   const { control, handleSubmit } = useForm();
@@ -210,7 +212,9 @@ const AddMemberModal: FC<Props> = ({ visible, groupID, onDismiss }) => {
         ...form,
         workDays: workDays,
       });
+      setMessage("Member added successfully");
     } catch (err) {
+      setMessage("Member added failed");
     } finally {
       dispatch(getGroupDetails({ token: String(token), id: groupID }));
       setLoading(false);

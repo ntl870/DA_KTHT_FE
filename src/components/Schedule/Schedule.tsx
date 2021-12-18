@@ -17,6 +17,8 @@ interface Event {
 }
 
 export interface Schedule {
+  checkedIn?: boolean;
+  timeLate?: number;
   name?: string;
   description?: string;
   feePerHour?: number;

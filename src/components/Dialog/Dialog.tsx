@@ -15,18 +15,26 @@ interface Props {
   dialogVisible: boolean;
   setDialogVisible: (state: boolean) => void;
 }
+const convertTime = (time: number): string => {
+  if (time < 10) {
+    return `0${time}:${String(time).split(".")[1] || "00"}`;
+  }
+  return `${time}:${String(time).split(".")[1] || "00"}`;
+};
+
+const convertTimeLate = (time: string) => {
+  const [hour, minute] = time.split(".");
+  if (minute) {
+    return `${hour}:${minute}`;
+  }
+  return "";
+};
 
 const DialogPopup: FC<Props> = ({
   popUpData,
   dialogVisible,
   setDialogVisible,
 }) => {
-  const convertTime = (time: number): string => {
-    if (time < 10) {
-      return `0${time}:00`;
-    }
-    return `${time}:00`;
-  };
   const nameAlias = getNameAlias(popUpData.name as string);
   return (
     <Modal
@@ -43,6 +51,29 @@ const DialogPopup: FC<Props> = ({
           )} to ${convertTime(popUpData.timeFinish as number)} ${
             weekDaysArr[popUpData.dayOfWeek as number]
           }`}</Text>
+          {popUpData?.checkedIn ? (
+            <>
+              <Text style={{ ...styles.mediumText, color: "green" }}>
+                Checked in
+              </Text>
+              <Text style={{ color: "red" }}>
+                {popUpData?.timeLate !== 0 &&
+                  `Late ${convertTimeLate(String(popUpData?.timeLate))} hour`}
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text
+                style={{
+                  ...styles.mediumText,
+                  color: "red",
+                  fontWeight: "bold",
+                }}
+              >
+                Haven't Checked in
+              </Text>
+            </>
+          )}
         </View>
       </ModalContent>
       <Button onPress={() => setDialogVisible(false)} style={styles.button}>

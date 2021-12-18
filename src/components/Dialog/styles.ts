@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
   },
   mediumText: {
     fontSize: 15,
+    fontWeight: "bold",
   },
 });
 

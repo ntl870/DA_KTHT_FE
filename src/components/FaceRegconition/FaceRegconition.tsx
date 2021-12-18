@@ -10,6 +10,7 @@ import { enable, disable } from "../../store/reducers/BottomBarStatusSlice";
 import LoadingOverlay from "../Loading/Loading";
 import { useNavigation } from "@react-navigation/core";
 import { MenuScreenProps } from "../../types/screens";
+import { useSnackbarContext } from "../../hooks/useSnackBarContext";
 import styles from "./styles";
 
 interface IPictureData {
@@ -26,6 +27,7 @@ const Camera: FC = () => {
   const { data: userInfo } = useSelector(selectUserInfo);
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch = useDispatch();
+  const { setMessage } = useSnackbarContext();
   const navigation = useNavigation<MenuScreenProps>();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const cameraRef = useRef<any>(null);
@@ -57,15 +59,19 @@ const Camera: FC = () => {
         }
         try {
           setLoading(true);
-          await axios.post("https://6a4f-2405-4803-d3e6-7aa0-ffff-ffff-ffff-fff8.ngrok.io/train", {
-            userId: userInfo?._id,
-          });
+          await axios.post(
+            "https://6a4f-2405-4803-d3e6-7aa0-ffff-ffff-ffff-fff8.ngrok.io/train",
+            {
+              userId: userInfo?._id,
+            }
+          );
         } catch (e) {
-          console.log(e);
         } finally {
           setLoading(false);
         }
+        setMessage("Model trained successfully");
       } catch (e) {
+        setMessage("Model trained failed");
       } finally {
         setTransferred(0);
         navigation.navigate("MenuScreen");
@@ -89,13 +95,8 @@ const Camera: FC = () => {
           buttonNegative: "Disallow",
         }}
       />
-      {/* <View>
-        <TouchableOpacity activeOpacity={0.5} onPress={takePicture}>
-          <Button icon="camera">Switch</Button>
-        </TouchableOpacity>
-      </View> */}
+
       {transferred > 0 && <ProgressBar progress={transferred} color="red" />}
-      {/* {loading && <Text>Uploading...</Text>} */}
       {transferred === 0 && (
         <View>
           <TouchableOpacity activeOpacity={0.5} onPress={uploadPicture}>

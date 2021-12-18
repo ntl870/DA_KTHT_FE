@@ -17,6 +17,7 @@ import getNameAlias from "../../utils/GetNameAlias";
 import { Asset, launchImageLibrary } from "react-native-image-picker";
 import { uploadGroupPictureAndGetURL } from "../../utils/UploadImageAndGetURL";
 import { enable, disable } from "../../store/reducers/FABSlice";
+import { useSnackbarContext } from "../../hooks/useSnackBarContext";
 interface Props {
   visible: boolean;
   onDismiss: () => void;
@@ -85,6 +86,7 @@ const ModifyGroupModal: FC<Props> = ({
   const dispatch = useDispatch<AppDispatch>();
   const [imageSelected, setImageSelected] = useState<boolean>(false);
   const [image, setImage] = useState<string>(groupData?.groupImage as string);
+  const { setMessage } = useSnackbarContext();
 
   const selectImage = (): void => {
     launchImageLibrary(
@@ -127,7 +129,9 @@ const ModifyGroupModal: FC<Props> = ({
         groupImage: imageURL ? imageURL : groupData?.groupImage,
       });
       dispatch(getGroupDetails({ token: String(token), id: groupID }));
+      setMessage("Group modified successfully");
     } catch (e) {
+      setMessage("Group modified failed");
     } finally {
       setLoading(false);
     }

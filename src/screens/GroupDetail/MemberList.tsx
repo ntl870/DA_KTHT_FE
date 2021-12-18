@@ -9,6 +9,7 @@ import { selectToken } from "../../store/reducers/AuthSlice";
 import getNameAlias from "../../utils/GetNameAlias";
 import Modal, { ModalContent, ModalTitle } from "react-native-modals";
 import { authAPI } from "../../apis/axios/auth";
+import { useSnackbarContext } from "../../hooks/useSnackBarContext";
 
 interface Props {
   id: string;
@@ -56,13 +57,15 @@ const MemberList: FC<Props> = ({ groupData }) => {
   const [deleteID, setDeleteID] = useState("");
   const token = useSelector(selectToken);
   const dispatch: AppDispatch = useDispatch();
-
+  const { setMessage } = useSnackbarContext();
   const deleteMember = (memberId: string) => async () => {
     try {
       await authAPI(String(token)).delete(
         `/groups/${groupData._id}/member/${memberId}`
       );
+      setMessage("Member deleted successfully");
     } catch (err) {
+      setMessage("Member deleted failed");
     } finally {
       dispatch(getGroupDetails({ token: String(token), id: groupData._id }));
       setIsModalVisible(false);
