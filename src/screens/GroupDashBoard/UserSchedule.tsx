@@ -7,6 +7,7 @@ import styles from "./ScheduleStyle";
 import { authAPI } from "../../apis/axios/auth";
 import { GroupRouteProps, GroupScreenProps } from "../../types/screens";
 import { View } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome5";
 
 interface Event {
   key: number;
@@ -17,12 +18,12 @@ interface Event {
 
 export interface Schedule {
   name?: string;
-  timeLate: number;
+  timeLate?: number;
   timeStart?: number;
   timeFinish?: number;
   dayOfWeek?: number;
-  _id: string;
-  checkedIn: boolean;
+  _id?: string;
+  checkedIn?: boolean;
 }
 
 interface Props {
@@ -41,6 +42,7 @@ const UserSchedule: FC<Props> = ({ route }) => {
     userName: string;
   };
   const [scheduleData, setScheduleData] = useState<Schedule[]>([]);
+  const [todayData, setTodayData] = useState<Schedule>({});
   const currentWeek = useMemo(() => {
     const curr = new Date();
     const first = curr.getDate() - curr.getDay();
@@ -60,10 +62,11 @@ const UserSchedule: FC<Props> = ({ route }) => {
       const { data } = await authAPI(String(token)).get(
         `groups/${groupId}/member/${userId}`
       );
-      const newData = data.map((item: Schedule) => ({
+      const newData = data.workingDay.map((item: Schedule) => ({
         ...item,
         name: name,
       }));
+      setTodayData(data.today);
       setScheduleData(newData);
     } catch (err) {
     } finally {
@@ -101,23 +104,12 @@ const UserSchedule: FC<Props> = ({ route }) => {
   return (
     <>
       <View style={styles.userInfos}>
-        <View>
-          <Text style={styles.userInfosUpperText}>{userName}</Text>
-        </View>
-        {/* <View>
-          {scheduleData.map((item) => {
-            if (item.checkedIn) {
-              return (
-                <>
-                  {item.timeLate > 0 && (
-                    <Text>{String(item.timeLate).split(".")[1]}</Text>
-                  )}
-                  <Text>{item.timeLate}</Text>
-                </>
-              );
-            }
-          })}
-        </View> */}
+        <Text style={styles.userInfosUpperText}>{userName}</Text>
+        <Icon
+          name="check-circle"
+          size={30}
+          color={todayData?.checkedIn ? "#77C66E" : "#808080"}
+        />
       </View>
       <Calendar
         events={events}

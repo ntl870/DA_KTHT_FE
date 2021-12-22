@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     margin: 10,
     borderColor: "#6200ee",
+    justifyContent:"space-between",
   },
   userInfosUpperText: {
     fontSize: 20,

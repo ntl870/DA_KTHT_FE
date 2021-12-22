@@ -62,7 +62,6 @@ const GroupDetailAdmin: FC<Props> = ({ route }) => {
 
   const { data: groupData, status }: GroupDetailsData =
     useSelector(selectGroupDetails);
-
   const sendEmail = useCallback(async () => {
     try {
       await authAPI(String(token)).post(`groups/${groupData?._id}/sendEmail`);

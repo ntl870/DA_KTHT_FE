@@ -80,7 +80,7 @@ const GroupList: FC<Props> = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(getDashboardGroups({ token: token as string, page: 1 }));
+    dispatch(getDashboardGroups({ token: token as string }));
   }, [dispatch, token]);
 
   const { data, status } = useSelector(selectDashboardGroups);
@@ -92,7 +92,7 @@ const GroupList: FC<Props> = () => {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     try {
-      dispatch(getDashboardGroups({ token: token as string, page: 1 }));
+      dispatch(getDashboardGroups({ token: token as string }));
     } catch (e) {
     } finally {
       setRefreshing(false);

@@ -6,18 +6,8 @@ import { Status } from "../../types/status";
 
 export const getDashboardGroups = createAsyncThunk(
   "group/dashboardGroups",
-  async ({
-    token,
-    page,
-  }: {
-    token: string;
-    page: number;
-  }): Promise<DashboardGroupsData> => {
-    const { data } = await authAPI(token).get("/groups", {
-      params: {
-        page: page,
-      },
-    });
+  async ({ token }: { token: string }): Promise<DashboardGroupsData> => {
+    const { data } = await authAPI(token).get("/groups");
     return data;
   }
 );

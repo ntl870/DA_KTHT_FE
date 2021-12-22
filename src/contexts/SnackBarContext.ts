@@ -1,4 +1,4 @@
-import { useContext, createContext } from "react";
+import { createContext } from "react";
 
 export const SnackBarContext = createContext({
     visible: false,

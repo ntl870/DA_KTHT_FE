@@ -41,18 +41,21 @@ const GroupItem: FC<DashboardGroup> = ({
                 {`${checkedIn}/${numbersOfMember} members`}
               </Text>
             </View>
-            <Progress.Bar
-              progress={checkedIn / numbersOfMember}
-              width={200}
-              height={10}
-              color="#6200ee"
-            />
+            {numbersOfMember > 0 && (
+              <Progress.Bar
+                progress={checkedIn / numbersOfMember}
+                width={200}
+                height={10}
+                color="#6200ee"
+              />
+            )}
+
             <View style={styles.groupItemLeftImagesGroup}>
               {(() => {
                 if (numbersOfMember > 3) {
-                  return avatars.map((item, index) => {
+                  return avatars?.map((item, index) => {
                     if (index < 3) {
-                      return item.avatar ? (
+                      return item?.avatar ? (
                         <Avatar.Image
                           size={38}
                           source={{ uri: item?.avatar }}
@@ -80,8 +83,8 @@ const GroupItem: FC<DashboardGroup> = ({
                     return <Fragment key={index} />;
                   });
                 }
-                return avatars.map((item, index) => {
-                  return item.avatar ? (
+                return avatars?.map((item, index) => {
+                  return item?.avatar ? (
                     <Avatar.Image
                       size={38}
                       source={{ uri: item?.avatar }}

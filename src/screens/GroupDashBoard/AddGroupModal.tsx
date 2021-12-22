@@ -100,7 +100,7 @@ const AddGroupModal: FC<Props> = ({ visible, onDismiss }) => {
     } catch (err) {
       setMessage("Add group failed");
     } finally {
-      dispatch(getDashboardGroups({ token: String(token), page: 1 }));
+      dispatch(getDashboardGroups({ token: String(token) }));
       setLoading(false);
       onDismiss();
     }

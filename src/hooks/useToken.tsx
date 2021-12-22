@@ -1,4 +1,4 @@
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectToken } from "../store/reducers/AuthSlice";
 
 export const useToken = (): { token: string | null } => {

@@ -60,7 +60,7 @@ const Camera: FC = () => {
         try {
           setLoading(true);
           await axios.post(
-            "https://6a4f-2405-4803-d3e6-7aa0-ffff-ffff-ffff-fff8.ngrok.io/train",
+            "https://ccb9-2405-4803-d3e6-7aa0-ffff-ffff-ffff-ffdc.ngrok.io/train",
             {
               userId: userInfo?._id,
             }
