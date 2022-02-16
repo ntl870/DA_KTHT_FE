@@ -35,6 +35,7 @@ const DialogPopup: FC<Props> = ({
   dialogVisible,
   setDialogVisible,
 }) => {
+  console.log(1111)
   const nameAlias = getNameAlias(popUpData.name as string);
   return (
     <Modal
